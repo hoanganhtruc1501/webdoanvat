@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng</title>
+</head>
+<body>
+    <h1>Chi tiết đơn hàng #{{ order.id }}</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <p>Khách hàng: {{ order.full_name }}</p>
+    <p>SĐT: {{ order.phone }}</p>
+    <p>Email: {{ order.email }}</p>
+    <p>Địa chỉ: {{ order.address }}, {{ order.ward }}, {{ order.district }}, {{ order.city }}</p>
+    <p>Trạng thái: {{ order.get_status_display }}</p>
+    <p>Thanh toán: {{ order.get_payment_method_display }}</p>
+
+    <h2>Sản phẩm</h2>
+    <ul>
+        {% for item in order.items.all %}
+            <li>{{ item.snack_name }} - {{ item.quantity }} x {{ item.price }} = {{ item.subtotal }}</li>
+        {% endfor %}
+    </ul>
+
+    <p>Tổng tiền hàng: {{ order.total_amount }}</p>
+    <p>Phí ship: {{ order.shipping_fee }}</p>
+    <p><strong>Tổng cộng: {{ order.final_total }}</strong></p>
+
+    <p><a href="{% url 'orders:list' %}">Xem danh sách đơn</a></p>
+</body>
+</html>
