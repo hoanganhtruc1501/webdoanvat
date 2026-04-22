@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng của tôi</title>
+</head>
+<body>
+    <h1>Đơn hàng của tôi</h1>
+
+    {% if guest_mode %}
+        <p>Bạn chưa đăng nhập nên chưa xem được lịch sử đơn hàng tài khoản.</p>
+        <p>Sau khi đặt hàng, bạn vẫn xem lại đơn gần nhất bằng link chi tiết đơn.</p>
+    {% endif %}
+
+    {% if orders %}
+        <ul>
+            {% for order in orders %}
+                <li>
+                    <a href="{% url 'orders:detail' order.id %}">
+                        Đơn #{{ order.id }}
+                    </a>
+                    - {{ order.full_name }}
+                    - {{ order.get_status_display }}
+                    - {{ order.final_total }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Chưa có đơn hàng nào.</p>
+    {% endif %}
+</body>
+</html>
