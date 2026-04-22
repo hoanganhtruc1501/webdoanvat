@@ -1,140 +1,193 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.shortcuts import render
+
+# Create your views here.
+from decimal import Decimal
+
+from django.apps import apps
 from django.contrib import messages
-from books.models import Book
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+
+CART_SESSION_ID = "cart"
+
+
+def get_snack_model():
+    return apps.get_model("snacks", "Snack")
+
 
 def get_cart(request):
-    """Lấy giỏ hàng từ session"""
-    return request.session.get('cart', {})
+    """Lấy giỏ hàng từ session."""
+    cart = request.session.get(CART_SESSION_ID, {})
+    return cart if isinstance(cart, dict) else {}
+
 
 def save_cart(request, cart):
-    """Lưu giỏ hàng vào session"""
-    request.session['cart'] = cart
+    """Lưu giỏ hàng vào session."""
+    request.session[CART_SESSION_ID] = cart
     request.session.modified = True
+
+
+def get_snack_name(snack):
+    return getattr(snack, "title", getattr(snack, "name", str(snack)))
+
+
+def get_snack_price(snack):
+    if hasattr(snack, "get_discounted_price") and callable(snack.get_discounted_price):
+        return Decimal(str(snack.get_discounted_price()))
+
+    return Decimal(str(getattr(snack, "price", 0)))
+
+
+def get_quantity(value, default=1):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def redirect_back(request, fallback="snacks:list"):
+    return redirect(request.META.get("HTTP_REFERER") or fallback)
+
 
 def cart_view(request):
-    """Xem giỏ hàng"""
+    """Xem giỏ hàng."""
+    Snack = get_snack_model()
     cart = get_cart(request)
+    cleaned_cart = {}
     cart_items = []
-    total_price = 0
+    total_price = Decimal("0")
     total_quantity = 0
-    
-    for book_id, quantity in cart.items():
-        try:
-            book = Book.objects.get(id=int(book_id))
-            # Sử dụng giá đã giảm thay vì giá gốc
-            discounted_price = book.get_discounted_price()
-            item_total = discounted_price * quantity
-            cart_items.append({
-                'book': book,
-                'quantity': quantity,
-                'item_total': item_total,
-                'discounted_price': discounted_price
-            })
-            total_price += item_total
-            total_quantity += quantity
-        except Book.DoesNotExist:
-            continue
-    
-    context = {
-        'cart_items': cart_items,
-        'total_price': total_price,
-        'total_quantity': total_quantity,
-        'page_title': 'Giỏ hàng của bạn'
-    }
-    return render(request, 'cart/cart_detail.html', context)
 
-def add_to_cart(request, book_id):
-    """Thêm sách vào giỏ hàng"""
-    book = get_object_or_404(Book, id=book_id)
-    
-    if book.stock <= 0:
-        messages.error(request, f'Sách "{book.title}" đã hết hàng!')
-        return redirect(request.META.get('HTTP_REFERER', 'books:list'))
-    
-    # Lấy số lượng từ POST request (nếu có), mặc định là 1
-    quantity = 1
-    if request.method == 'POST':
-        try:
-            quantity = int(request.POST.get('quantity', 1))
-            if quantity <= 0:
-                quantity = 1
-        except (ValueError, TypeError):
-            quantity = 1
-    
-    cart = get_cart(request)
-    book_id_str = str(book_id)
-    
-    if book_id_str in cart:
-        # Kiểm tra nếu tăng số lượng có vượt quá tồn kho không
-        new_quantity = cart[book_id_str] + quantity
-        if new_quantity > book.stock:
-            messages.warning(request, f'Chỉ còn {book.stock} cuốn "{book.title}" trong kho!')
-            return redirect(request.META.get('HTTP_REFERER', 'books:list'))
-        cart[book_id_str] = new_quantity
-        if quantity == 1:
-            messages.success(request, f'Đã tăng số lượng "{book.title}" trong giỏ hàng!')
-        else:
-            messages.success(request, f'Đã thêm {quantity} cuốn "{book.title}" vào giỏ hàng!')
-    else:
-        # Kiểm tra số lượng yêu cầu có vượt quá tồn kho không
-        if quantity > book.stock:
-            messages.warning(request, f'Chỉ còn {book.stock} cuốn "{book.title}" trong kho!')
-            return redirect(request.META.get('HTTP_REFERER', 'books:list'))
-        cart[book_id_str] = quantity
-        if quantity == 1:
-            messages.success(request, f'Đã thêm "{book.title}" vào giỏ hàng!')
-        else:
-            messages.success(request, f'Đã thêm {quantity} cuốn "{book.title}" vào giỏ hàng!')
-    
-    save_cart(request, cart)
-    return redirect(request.META.get('HTTP_REFERER', 'books:list'))
+    for snack_id, quantity in cart.items():
+        snack_id = str(snack_id)
+        quantity = get_quantity(quantity)
 
-def update_cart(request, book_id):
-    """Cập nhật số lượng sách trong giỏ hàng"""
-    if request.method == 'POST':
-        book = get_object_or_404(Book, id=book_id)
-        quantity = int(request.POST.get('quantity', 1))
-        
         if quantity <= 0:
-            return remove_from_cart(request, book_id)
-        
-        if quantity > book.stock:
-            messages.warning(request, f'Chỉ còn {book.stock} cuốn "{book.title}" trong kho!')
-            return redirect('cart:detail')
-        
-        cart = get_cart(request)
-        cart[str(book_id)] = quantity
-        save_cart(request, cart)
-        
-        messages.success(request, f'Đã cập nhật số lượng "{book.title}"!')
-    
-    return redirect('cart:detail')
+            continue
 
-def remove_from_cart(request, book_id):
-    """Xóa sách khỏi giỏ hàng"""
-    book = get_object_or_404(Book, id=book_id)
+        try:
+            snack = Snack.objects.get(id=int(snack_id))
+        except (Snack.DoesNotExist, ValueError):
+            continue
+
+        price = get_snack_price(snack)
+        item_total = price * quantity
+
+        cart_items.append(
+            {
+                "snack": snack,
+                "quantity": quantity,
+                "price": price,
+                "discounted_price": price,
+                "item_total": item_total,
+            }
+        )
+        cleaned_cart[snack_id] = quantity
+        total_price += item_total
+        total_quantity += quantity
+
+    if cleaned_cart != cart:
+        save_cart(request, cleaned_cart)
+
+    context = {
+        "cart_items": cart_items,
+        "total_price": total_price,
+        "total_quantity": total_quantity,
+        "page_title": "Giỏ hàng của bạn",
+    }
+    return render(request, "carts/cart_detail.html", context)
+
+
+def add_to_cart(request, snack_id):
+    """Thêm sản phẩm vào giỏ hàng."""
+    Snack = get_snack_model()
+    snack = get_object_or_404(Snack, id=snack_id)
+    snack_name = get_snack_name(snack)
+    stock = getattr(snack, "stock", None)
+
+    if stock is not None and stock <= 0:
+        messages.error(request, f'Sản phẩm "{snack_name}" đã hết hàng!')
+        return redirect_back(request)
+
+    quantity = 1
+    if request.method == "POST":
+        quantity = max(get_quantity(request.POST.get("quantity", 1)), 1)
+
     cart = get_cart(request)
-    book_id_str = str(book_id)
-    
-    if book_id_str in cart:
-        del cart[book_id_str]
+    snack_id_str = str(snack_id)
+    current_quantity = get_quantity(cart.get(snack_id_str, 0), 0)
+    new_quantity = current_quantity + quantity
+
+    if stock is not None and new_quantity > stock:
+        messages.warning(request, f'Chỉ còn {stock} sản phẩm "{snack_name}" trong kho!')
+        return redirect_back(request)
+
+    cart[snack_id_str] = new_quantity
+    save_cart(request, cart)
+
+    if current_quantity:
+        messages.success(request, f'Đã cập nhật số lượng "{snack_name}" trong giỏ hàng!')
+    elif quantity == 1:
+        messages.success(request, f'Đã thêm "{snack_name}" vào giỏ hàng!')
+    else:
+        messages.success(request, f'Đã thêm {quantity} sản phẩm "{snack_name}" vào giỏ hàng!')
+
+    return redirect_back(request)
+
+
+def update_cart(request, snack_id):
+    """Cập nhật số lượng sản phẩm trong giỏ hàng."""
+    if request.method != "POST":
+        return redirect("cart:detail")
+
+    Snack = get_snack_model()
+    snack = get_object_or_404(Snack, id=snack_id)
+    snack_name = get_snack_name(snack)
+    quantity = get_quantity(request.POST.get("quantity", 1))
+
+    if quantity <= 0:
+        return remove_from_cart(request, snack_id)
+
+    stock = getattr(snack, "stock", None)
+    if stock is not None and quantity > stock:
+        messages.warning(request, f'Chỉ còn {stock} sản phẩm "{snack_name}" trong kho!')
+        return redirect("cart:detail")
+
+    cart = get_cart(request)
+    cart[str(snack_id)] = quantity
+    save_cart(request, cart)
+
+    messages.success(request, f'Đã cập nhật số lượng "{snack_name}"!')
+    return redirect("cart:detail")
+
+
+def remove_from_cart(request, snack_id):
+    """Xóa sản phẩm khỏi giỏ hàng."""
+    Snack = get_snack_model()
+    snack = get_object_or_404(Snack, id=snack_id)
+    snack_id_str = str(snack_id)
+    cart = get_cart(request)
+
+    if snack_id_str in cart:
+        del cart[snack_id_str]
         save_cart(request, cart)
-        messages.success(request, f'Đã xóa "{book.title}" khỏi giỏ hàng!')
-    
-    return redirect('cart:detail')
+        messages.success(request, f'Đã xóa "{get_snack_name(snack)}" khỏi giỏ hàng!')
+
+    return redirect("cart:detail")
+
 
 def clear_cart(request):
-    """Xóa toàn bộ giỏ hàng"""
-    request.session['cart'] = {}
-    request.session.modified = True
-    messages.success(request, 'Đã xóa toàn bộ giỏ hàng!')
-    return redirect('cart:detail')
+    """Xóa toàn bộ giỏ hàng."""
+    save_cart(request, {})
+    messages.success(request, "Đã xóa toàn bộ giỏ hàng!")
+    return redirect("cart:detail")
+
 
 def get_cart_count(request):
-    """Lấy số lượng sản phẩm trong giỏ hàng (dùng cho AJAX)"""
+    """Lấy tổng số lượng sản phẩm trong giỏ hàng."""
     cart = get_cart(request)
-    count = sum(cart.values())
-    return JsonResponse({'count': count})
+    count = sum(max(get_quantity(quantity, 0), 0) for quantity in cart.values())
+    return JsonResponse({"count": count})
 
 
