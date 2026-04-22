@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán</title>
+</head>
+<body>
+    <h1>Thanh toán</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Sản phẩm trong đơn</h2>
+    <ul>
+        {% for item in cart_items %}
+            <li>
+                {{ item.snack.name }} - SL: {{ item.quantity }} - Giá: {{ item.price }} - Thành tiền: {{ item.item_total }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p>Tổng số lượng: {{ total_quantity }}</p>
+    <p>Tổng tiền hàng: {{ total_amount }}</p>
+    <p>Phí ship: {{ shipping_fee }}</p>
+    <p><strong>Tổng thanh toán: {{ final_total }}</strong></p>
+
+    <h2>Thông tin nhận hàng</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Đặt hàng</button>
+    </form>
+</body>
+</html>
