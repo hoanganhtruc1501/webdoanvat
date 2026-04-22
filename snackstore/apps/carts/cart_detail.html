@@ -1,1 +1,206 @@
+{% extends "base.html" %}
+{% load static cart_extras %}
+
+{% block title %}{{ page_title }} - Snackstore{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1><i class="fas fa-shopping-bag"></i> {{ page_title }}</h1>
+
+  {% if cart_items %}
+  <div class="cart-summary">
+    <div class="cart-info">
+      <span class="cart-count">
+        <i class="fas fa-box"></i> Tổng cộng: {{ total_quantity }} sản phẩm
+      </span>
+      <span class="cart-total">
+        <i class="fas fa-money-bill-wave"></i> Tổng tiền: <strong>{{ total_price|vnd }}</strong>
+      </span>
+    </div>
+    <div class="cart-actions">
+      <a
+        href="{% url 'cart:clear' %}"
+        class="btn-clear"
+        onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?')"
+      >
+        <i class="fas fa-trash"></i> Xóa toàn bộ
+      </a>
+      <a href="{% url 'orders:checkout' %}" class="btn-checkout">
+        <i class="fas fa-credit-card"></i> Thanh toán
+      </a>
+    </div>
+  </div>
+
+  <div class="cart-items">
+    {% for item in cart_items %}
+    <div class="cart-item">
+      <div class="item-image">
+        {% if item.snack.image %}
+        <img src="{{ item.snack.image.url }}" alt="{{ item.snack.title|default:item.snack.name }}" />
+        {% else %}
+        <div class="item-image-placeholder">
+          <i class="fas fa-cookie-bite"></i>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="item-details">
+        <h3>{{ item.snack.title|default:item.snack.name }}</h3>
+
+        {% if item.snack.category %}
+        <p class="item-category">
+          <i class="fas fa-tag"></i> {{ item.snack.category.name|default:item.snack.category }}
+        </p>
+        {% endif %}
+
+        <p class="item-price">
+          <i class="fas fa-money-bill-wave"></i>
+          {% if item.has_discount %}
+          <span class="discounted-price">{{ item.discounted_price|vnd }}</span>
+          <span class="original-price">{{ item.original_price|vnd }}</span>
+          {% if item.discount %}
+          <span class="discount-info">-{{ item.discount|floatformat:0 }}%</span>
+          {% endif %}
+          <span>/ sản phẩm</span>
+          {% else %}
+          <span>{{ item.price|vnd }} / sản phẩm</span>
+          {% endif %}
+        </p>
+
+        {% if item.snack.stock != None %}
+        <p class="item-stock">
+          <i class="fas fa-boxes-stacked"></i> Còn lại: {{ item.snack.stock }} sản phẩm
+        </p>
+        {% endif %}
+      </div>
+
+      <div class="item-quantity">
+        <form method="post" action="{% url 'cart:update' snack_id=item.snack.id %}" class="quantity-form">
+          {% csrf_token %}
+          <label for="quantity_{{ item.snack.id }}">Số lượng:</label>
+          <div class="quantity-controls">
+            <button type="button" class="qty-btn qty-minus" data-snack-id="{{ item.snack.id }}">-</button>
+            <input
+              type="number"
+              id="quantity_{{ item.snack.id }}"
+              name="quantity"
+              value="{{ item.quantity }}"
+              min="1"
+              {% if item.snack.stock %}max="{{ item.snack.stock }}"{% endif %}
+              class="quantity-input"
+            />
+            <button type="button" class="qty-btn qty-plus" data-snack-id="{{ item.snack.id }}">+</button>
+          </div>
+          <button type="submit" class="btn-update">
+            <i class="fas fa-pen"></i> Cập nhật
+          </button>
+        </form>
+      </div>
+
+      <div class="item-total">
+        <p class="total-label">Thành tiền:</p>
+        <p class="total-amount">{{ item.item_total|vnd }}</p>
+      </div>
+
+      <div class="item-actions">
+        <a
+          href="{% url 'cart:remove' snack_id=item.snack.id %}"
+          class="btn-remove"
+          onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')"
+        >
+          <i class="fas fa-trash"></i> Xóa
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="cart-footer">
+    <div class="cart-total-section">
+      <div class="total-breakdown">
+        <div class="total-row">
+          <span>Tổng số lượng:</span>
+          <span>{{ total_quantity }} sản phẩm</span>
+        </div>
+        <div class="total-row total-price-row">
+          <span>Tổng tiền:</span>
+          <span class="final-total">{{ total_price|vnd }}</span>
+        </div>
+      </div>
+      <div class="checkout-section">
+        <a href="{% url 'snacks:list' %}" class="btn-continue">
+          <i class="fas fa-arrow-left"></i> Tiếp tục mua hàng
+        </a>
+        <a href="{% url 'orders:checkout' %}" class="btn-checkout-main">
+          <i class="fas fa-credit-card"></i> Tiến hành thanh toán
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-cart">
+    <div class="empty-cart-icon">
+      <i class="fas fa-shopping-bag"></i>
+    </div>
+    <h2>Giỏ hàng của bạn đang trống</h2>
+    <p>Hãy thêm một số sản phẩm yêu thích vào giỏ hàng để tiếp tục mua sắm.</p>
+    <a href="{% url 'snacks:list' %}" class="btn-shop-now">
+      <i class="fas fa-store"></i> Khám phá sản phẩm ngay
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const minusButtons = document.querySelectorAll(".qty-minus");
+  const plusButtons = document.querySelectorAll(".qty-plus");
+  const quantityInputs = document.querySelectorAll(".quantity-input");
+
+  minusButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const snackId = this.dataset.snackId;
+      const input = document.getElementById(`quantity_${snackId}`);
+      const currentValue = parseInt(input.value, 10) || 1;
+
+      if (currentValue > 1) {
+        input.value = currentValue - 1;
+      }
+    });
+  });
+
+  plusButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const snackId = this.dataset.snackId;
+      const input = document.getElementById(`quantity_${snackId}`);
+      const currentValue = parseInt(input.value, 10) || 1;
+      const maxValue = parseInt(input.max, 10);
+
+      if (!maxValue || currentValue < maxValue) {
+        input.value = currentValue + 1;
+      }
+    });
+  });
+
+  quantityInputs.forEach(function (input) {
+    input.addEventListener("input", function () {
+      const value = parseInt(this.value, 10) || 1;
+      const min = parseInt(this.min, 10) || 1;
+      const max = parseInt(this.max, 10);
+
+      if (value < min) {
+        this.value = min;
+      } else if (max && value > max) {
+        this.value = max;
+      }
+    });
+  });
+});
+</script>
+{% endblock %}
 
