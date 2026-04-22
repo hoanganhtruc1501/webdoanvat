@@ -1,0 +1,117 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Customer Reviews</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #fff;
+        color: #333;
+      }
+      .container {
+        max-width: 1280px;
+        margin: 40px auto 0 auto;
+        padding: 0 16px 40px 16px;
+      }
+      h2 {
+        font-weight: 700;
+        font-size: 18px;
+        text-align: center;
+        color: #000;
+        display: inline-block;
+        border-bottom: 2px solid #fca28a;
+        padding-bottom: 4px;
+        margin-bottom: 40px;
+      }
+      .reviews {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      @media (min-width: 640px) {
+        .reviews {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (min-width: 1024px) {
+        .reviews {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .review-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 32px 32px 32px 32px;
+        box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .review-card img {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 16px;
+      }
+      .review-name {
+        font-weight: 600;
+        font-size: 18px;
+        color: #fca28a;
+        margin-bottom: 12px;
+      }
+      .review-text {
+        font-size: 14px;
+        color: #4a4a4a;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>ĐÁNH GIÁ CỦA KHÁCH HÀNG</h2>
+      <div class="reviews">
+        <div class="review-card">
+          <img
+            src="https://storage.googleapis.com/a1aa/image/9bd745c3-f0c0-4dd2-19ba-84ee8e1402f1.jpg"
+            alt="Man in suit with glasses and short black hair"
+          />
+          <div class="review-name">Vũ Trọng Sinh</div>
+          <div class="review-text">
+            "Mua sách online ở đây rất tiện lợi. Web sử dụng mượt mà, thao tác
+            dễ dàng. Sách đa dạng, chất lượng tốt. Bookstore này 10 điểm không
+            có nhưng!"
+          </div>
+        </div>
+        <div class="review-card">
+          <img
+            src="https://storage.googleapis.com/a1aa/image/63694e28-b9f8-4c08-0ba4-1339dc94377a.jpg"
+            alt="Young woman in purple dress with braided hair"
+          />
+          <div class="review-name">Nguyễn Thùy Chi</div>
+          <div class="review-text">
+            "Sách hay, giá cả hợp lý, dịch vụ chăm sóc khách hàng tốt! Giao hàng
+            nhanh chóng."
+          </div>
+        </div>
+        <div class="review-card">
+          <img
+            src="https://storage.googleapis.com/a1aa/image/3ee150da-78dd-42b6-429f-3784ebb2e6ac.jpg"
+            alt="Man in suit with black hair and earphones"
+          />
+          <div class="review-name">Nguyễn Thanh Tùng</div>
+          <div class="review-text">
+            "Rất hài lòng với chất lượng sách và phong cách phục vụ! Kho sách
+            phong phú, tìm được nhiều đầu sách hay."
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

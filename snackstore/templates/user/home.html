@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% block title %}{{ title }} - Bookstore{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <!-- Hero Section -->
+  <div class="jumbotron bg-primary text-white p-5 rounded mb-5">
+    <div class="container text-center">
+      <h1 class="display-4">📚 {{ message }}</h1>
+      <p class="lead">Khám phá hàng ngàn cuốn sách hay nhất</p>
+      <a
+        class="btn btn-light btn-lg"
+        href="{% url 'books:list' %}"
+        role="button"
+        >Mua sách ngay</a
+      >
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="row text-center">
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">📖 Đa dạng thể loại</h5>
+          <p class="card-text">Từ văn học, khoa học đến kỹ năng sống</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">🚚 Giao hàng nhanh</h5>
+          <p class="card-text">Giao hàng toàn quốc trong 1-3 ngày</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">💰 Giá cả hợp lý</h5>
+          <p class="card-text">Giá tốt nhất thị trường</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

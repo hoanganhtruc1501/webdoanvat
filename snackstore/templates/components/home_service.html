@@ -1,0 +1,124 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Feature Cards</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background-color: #fff;
+      }
+      .container {
+        max-width: 1120px;
+        margin: 32px auto;
+        padding: 0 16px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 24px;
+      }
+      .card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        flex: 1 1 220px;
+        min-width: 220px;
+        gap: 16px;
+      }
+      .icon {
+        color: #f08074;
+        font-size: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .icon.phone {
+        transform: rotate(12deg);
+      }
+      .icon img {
+        width: 24px;
+        height: 24px;
+      }
+      .text-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .title {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 1.2;
+        color: #1f2937;
+        text-transform: uppercase;
+        margin: 0 0 4px 0;
+        min-height: 0;
+      }
+      .subtitle {
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 1.3;
+        color: #6b7280;
+        margin: 0;
+      }
+      @media (max-width: 640px) {
+        .container {
+          flex-direction: column;
+          gap: 16px;
+        }
+        .card {
+          min-width: auto;
+          width: 100%;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="icon">
+          <i class="fas fa-truck"></i>
+        </div>
+        <div class="text-group">
+          <h3 class="title">GIAO HÀNG NHANH</h3>
+          <p class="subtitle">Cho tất cả đơn hàng</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="text-group">
+          <h3 class="title">SẢN PHẨM ĐỘC QUYỀN</h3>
+          <p class="subtitle">Cam kết chất lượng</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon phone">
+          <i class="fas fa-phone-alt"></i>
+        </div>
+        <div class="text-group">
+          <h3 class="title">HỖ TRỢ 24/7</h3>
+          <p class="subtitle">Tất cả ngày trong tuần</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon">
+          <i class="fa-solid fa-money-bill"></i>
+        </div>
+        <div class="text-group">
+          <h3 class="title">HOÀN LẠI TIỀN</h3>
+          <p class="subtitle">Nếu không hài lòng</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,215 @@
+{% load static %}
+
+<!-- Slick Slider CSS -->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"
+/>
+
+<!-- Banner Slider -->
+<div class="banner-slider">
+  <div class="slide">
+    <img
+      src="../../media/books/30eea3528c613c3f6570_omay-ik.jpg"
+      alt="Banner 1"
+    />
+  </div>
+  <div class="slide">
+    <img src="../../media/books/KM-01-06-voucher.jpg" alt="Banner 2" />
+  </div>
+  <div class="slide">
+    <img
+      src="../../media/books/z6580131255265_65aaa355b683f3890a178233d20da2a1.jpg"
+      alt="Banner 3"
+    />
+  </div>
+  <div class="slide">
+    <img
+      src="../../media/books/z6483603789592_f00c7863a7a262d67e15b04eac68db17.jpg"
+      alt="Banner 4"
+    />
+  </div>
+</div>
+
+<!-- Slider Styles -->
+<style>
+  .banner-slider {
+    margin: 20px auto;
+    max-width: 1200px;
+  }
+
+  .slide {
+    outline: none;
+  }
+
+  .slide img {
+    width: 100%;
+    height: 400px;
+    object-fit: fill;
+    border-radius: 10px;
+  }
+
+  /* Custom Slick Navigation */
+  .slick-prev,
+  .slick-next {
+    font-size: 0;
+    line-height: 0;
+    position: absolute;
+    top: 50%;
+    display: block;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    transform: translate(0, -50%);
+    cursor: pointer;
+    color: transparent;
+    border: none;
+    outline: none;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+
+  .slick-prev:hover,
+  .slick-next:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .slick-prev {
+    left: 20px;
+  }
+
+  .slick-next {
+    right: 20px;
+  }
+
+  .slick-prev:before,
+  .slick-next:before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 20px;
+    line-height: 1;
+    opacity: 1;
+    color: white;
+  }
+
+  .slick-prev:before {
+    content: "\f104"; /* fa-angle-left */
+  }
+
+  .slick-next:before {
+    content: "\f105"; /* fa-angle-right */
+  }
+
+  /* Custom Dots */
+  .slick-dots {
+    bottom: 20px;
+    text-align: center;
+  }
+
+  .slick-dots li {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0 5px;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .slick-dots li button {
+    font-size: 0;
+    line-height: 0;
+    display: block;
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+    cursor: pointer;
+    color: transparent;
+    border: 0;
+    outline: none;
+    background: transparent;
+  }
+
+  .slick-dots li button:before {
+    font-size: 12px;
+    line-height: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    content: "•";
+    text-align: center;
+    opacity: 0.5;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+  }
+
+  .slick-dots li.slick-active button:before {
+    opacity: 1;
+    color: white;
+    background: rgba(0, 123, 255, 0.8);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .slide img {
+      height: 250px;
+    }
+
+    .slick-prev,
+    .slick-next {
+      width: 40px;
+      height: 40px;
+    }
+
+    .slick-prev:before,
+    .slick-next:before {
+      font-size: 16px;
+    }
+
+    .slick-prev {
+      left: 10px;
+    }
+
+    .slick-next {
+      right: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .slide img {
+      height: 200px;
+    }
+  }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".banner-slider").slick({
+      infinite: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 4000,
+      dots: true,
+      arrows: true,
+      fade: true,
+      cssEase: "linear",
+    });
+  });
+</script>

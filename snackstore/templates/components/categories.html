@@ -1,0 +1,55 @@
+{% load static %}
+<!-- Categories Section -->
+<div class="category-list">
+  <h2 style="margin: 0">Thể loại</h2>
+  <!-- All categories button -->
+  <ul style="margin-top: 10px">
+    <li class="{% if not request.GET.category %}active{% endif %}">
+      <a href="{% url 'books:list' %}">
+        <span>Tất cả</span>
+        <!-- <span class="book-count">{{ total_books|default:0 }}</span> -->
+      </a>
+    </li>
+    {% for category in categories %}
+    <li class="{% if request.GET.category == category.slug %}active{% endif %}">
+      <a
+        href="{% url 'books:list' %}?category={{ category.slug }}"
+        title="{{ category.description|default:category.name }}"
+      >
+        <span>{{ category.name }}</span>
+        <!-- <span class="book-count">{{ category.get_books_count }}</span> -->
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<style>
+  .category-list {
+    min-width: 200px;
+  }
+  .category-list ul li a {
+    text-decoration: none;
+    display: block;
+    transition: all 0.3s ease;
+  }
+  .category-list li {
+    padding: 8px 10px;
+  }
+  ul,
+  li,
+  a {
+    list-style-type: none;
+    color: #000;
+  }
+
+  .category-list ul li.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+  .category-list ul li.active a {
+    color: white;
+  }
+</style>
