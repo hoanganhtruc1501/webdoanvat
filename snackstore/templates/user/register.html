@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký - Snack Snackstore</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <div class="auth-logo-icon">🌿</div>
+            <span class="auth-logo-text">SNACK</span>
+          </div>
+          <h1 class="auth-title">Tạo tài khoản mới</h1>
+          <p class="auth-subtitle">
+            Tham gia cộng đồng cùng ăn vặt ngon của chúng tôi
+          </p>
+        </div>
+
+        {% if form.errors %}
+        <div class="error-message">
+          <ul>
+            {% for field, errors in form.errors.items %} {% for error in errors
+            %}
+            <li>{{ error }}</li>
+            {% endfor %} {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <form method="post" class="auth-form" id="registerForm">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">
+              <i class="fas fa-user"></i> Tên đăng nhập
+            </label>
+            <input
+              type="text"
+              name="{{ form.username.name }}"
+              id="{{ form.username.id_for_label }}"
+              class="form-control"
+              placeholder="Tên đăng nhập (3-20 ký tự)"
+              value="{{ form.username.value|default:'' }}"
+              required
+            />
+            {% if form.username.help_text %}
+            <div class="form-help">{{ form.username.help_text }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">
+              <i class="fas fa-envelope"></i> Email
+            </label>
+            <input
+              type="email"
+              name="{{ form.email.name }}"
+              id="{{ form.email.id_for_label }}"
+              class="form-control"
+              placeholder="email@example.com"
+              value="{{ form.email.value|default:'' }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.first_name.id_for_label }}">
+              <i class="fas fa-id-card"></i> Tên
+            </label>
+            <input
+              type="text"
+              name="{{ form.first_name.name }}"
+              id="{{ form.first_name.id_for_label }}"
+              class="form-control"
+              placeholder="Tên của bạn"
+              value="{{ form.first_name.value|default:'' }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}">
+              <i class="fas fa-id-card"></i> Họ
+            </label>
+            <input
+              type="text"
+              name="{{ form.last_name.name }}"
+              id="{{ form.last_name.id_for_label }}"
+              class="form-control"
+              placeholder="Họ và tên đệm"
+              value="{{ form.last_name.value|default:'' }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.password1.id_for_label }}">
+              <i class="fas fa-lock"></i> Mật khẩu
+            </label>
+            <input
+              type="password"
+              name="{{ form.password1.name }}"
+              id="{{ form.password1.id_for_label }}"
+              class="form-control"
+              placeholder="Tạo mật khẩu mạnh"
+              required
+            />
+
+            <div class="password-requirements">
+              <h6>Yêu cầu mật khẩu:</h6>
+              <ul>
+                <li>Ít nhất 8 ký tự</li>
+                <li>Không được chỉ là số</li>
+                <li>Không được quá phổ biến</li>
+                <li>Không được giống với tên đăng nhập</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.password2.id_for_label }}">
+              <i class="fas fa-lock"></i> Xác nhận mật khẩu
+            </label>
+            <input
+              type="password"
+              name="{{ form.password2.name }}"
+              id="{{ form.password2.id_for_label }}"
+              class="form-control"
+              placeholder="Nhập lại mật khẩu"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn-auth" id="registerBtn">
+            <i class="fas fa-user-plus"></i> Tạo tài khoản
+          </button>
+        </form>
+
+        <div class="auth-divider">
+          <span>hoặc</span>
+        </div>
+
+        <div class="auth-footer">
+          <p>
+            Đã có tài khoản?
+            <a href="{% url 'snacks:login' %}" class="auth-link">
+              <i class="fas fa-sign-in-alt"></i> Đăng nhập ngay
+            </a>
+          </p>
+          <p style="margin-top: 15px">
+            <a href="{% url 'snacks:list' %}" class="auth-link">
+              <i class="fas fa-arrow-left"></i> Quay về trang chủ
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("registerForm");
+        const btn = document.getElementById("registerBtn");
+        const password1 = document.getElementById(
+          "{{ form.password1.id_for_label }}",
+        );
+        const password2 = document.getElementById(
+          "{{ form.password2.id_for_label }}",
+        );
+
+        form.addEventListener("submit", function () {
+          btn.classList.add("loading");
+          btn.disabled = true;
+        });
+
+        // Password confirmation validation
+        password2.addEventListener("input", function () {
+          if (password1.value !== password2.value) {
+            password2.setCustomValidity("Mật khẩu không khớp");
+          } else {
+            password2.setCustomValidity("");
+          }
+        });
+
+        password1.addEventListener("input", function () {
+          if (password2.value && password1.value !== password2.value) {
+            password2.setCustomValidity("Mật khẩu không khớp");
+          } else {
+            password2.setCustomValidity("");
+          }
+        });
+
+        // Remove loading state if there are errors
+        if (document.querySelector(".error-message")) {
+          btn.classList.remove("loading");
+          btn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

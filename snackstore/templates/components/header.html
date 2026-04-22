@@ -3,15 +3,15 @@
 <header class="header">
   <div class="header-container">
     <!-- Logo Section -->
-    <a href="{% url 'books:list' %}" class="logo">
+    <a href="{% url 'snacks:list' %}" class="logo">
       <div class="logo-icon"></div>
-      <span class="logo-text">SACH</span>
+      <span class="logo-text">SNACK</span>
     </a>
 
     <!-- Navigation Menu -->
     <!-- <nav>
                     <ul class="nav-menu">
-                        <li><a href="{% url 'books:list' %}" class="{% if request.resolver_match.url_name == 'list' %}active{% endif %}">Trang chủ</a></li>
+                        <li><a href="{% url 'snacks:list' %}" class="{% if request.resolver_match.url_name == 'list' %}active{% endif %}">Trang chủ</a></li>
                         <li><a href="#">Blog</a></li>
                         <li><a href="#">Liên hệ</a></li>
                     </ul>
@@ -30,7 +30,7 @@
           </span>
           <div class="dropdown-menu" id="userDropdown">
             {% if user.is_staff %}
-            <a href="{% url 'books:admin_dashboard' %}" class="dropdown-item">
+            <a href="{% url 'snacks:admin_dashboard' %}" class="dropdown-item">
               <i class="fas fa-tachometer-alt"></i> Dashboard Admin
             </a>
             <a href="/admin/" class="dropdown-item">
@@ -40,16 +40,16 @@
             <a href="{% url 'orders:list'%}" class="dropdown-item">
               <i class="fas fa-shopping-cart"></i> Đơn mua
             </a>
-            <a href="{% url 'books:logout' %}" class="dropdown-item">
+            <a href="{% url 'snacks:logout' %}" class="dropdown-item">
               <i class="fas fa-sign-out-alt"></i> Đăng xuất
             </a>
           </div>
         </div>
         {% else %}
-        <a href="{% url 'books:login' %}" class="auth-btn login-btn">
+        <a href="{% url 'snacks:login' %}" class="auth-btn login-btn">
           <i class="fas fa-sign-in-alt"></i> Đăng nhập
         </a>
-        <a href="{% url 'books:register' %}" class="auth-btn register-btn">
+        <a href="{% url 'snacks:register' %}" class="auth-btn register-btn">
           <i class="fas fa-user-plus"></i> Đăng ký
         </a>
         {% endif %}

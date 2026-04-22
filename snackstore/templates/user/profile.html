@@ -1,0 +1,7 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  <h2>Thông tin cá nhân</h2>
+  <p><strong>Tài khoản:</strong> {{ user.username }}</p>
+  <p><strong>Email:</strong> {{ user.email }}</p>
+</div>
+{% endblock %}

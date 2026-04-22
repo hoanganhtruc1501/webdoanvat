@@ -1,23 +1,23 @@
 {% load static %}
 <!-- Categories Section -->
 <div class="category-list">
-  <h2 style="margin: 0">Thể loại</h2>
+  <h2 style="margin: 0">Mặt hàng</h2>
   <!-- All categories button -->
   <ul style="margin-top: 10px">
     <li class="{% if not request.GET.category %}active{% endif %}">
-      <a href="{% url 'books:list' %}">
+      <a href="{% url 'snacks:list' %}">
         <span>Tất cả</span>
-        <!-- <span class="book-count">{{ total_books|default:0 }}</span> -->
+        <!-- <span class="snack-count">{{ total_snacks|default:0 }}</span> -->
       </a>
     </li>
     {% for category in categories %}
     <li class="{% if request.GET.category == category.slug %}active{% endif %}">
       <a
-        href="{% url 'books:list' %}?category={{ category.slug }}"
+        href="{% url 'snacks:list' %}?category={{ category.slug }}"
         title="{{ category.description|default:category.name }}"
       >
         <span>{{ category.name }}</span>
-        <!-- <span class="book-count">{{ category.get_books_count }}</span> -->
+        <!-- <span class="snack-count">{{ category.get_snacks_count }}</span> -->
       </a>
     </li>
     {% endfor %}

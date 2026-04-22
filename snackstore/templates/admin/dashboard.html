@@ -242,11 +242,11 @@ Bảng Điều Khiển{% endblock %} {% block extra_css %}
   <!-- Thống kê chính -->
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon books">
-        <i class="fas fa-book"></i>
+      <div class="stat-icon snacks">
+        <i class="fas fa-snack"></i>
       </div>
-      <div class="stat-number books">{{ total_books }}</div>
-      <div class="stat-label">Tổng số sách</div>
+      <div class="stat-number snacks">{{ total_snacks }}</div>
+      <div class="stat-label">Tổng số sản phẩm</div>
     </div>
 
     <div class="stat-card">
@@ -268,16 +268,16 @@ Bảng Điều Khiển{% endblock %} {% block extra_css %}
 
   <!-- Thông tin chi tiết -->
   <div class="info-grid">
-    <!-- Thống kê sách -->
+    <!-- Thống kê sản phẩm -->
     <div class="info-card">
-      <h3><i class="fas fa-book"></i> Thống kê sách</h3>
+      <h3><i class="fas fa-snack"></i> Thống kê sản phẩm</h3>
       <div class="status-item">
-        <span class="status-label">Sách còn hàng:</span>
-        <span class="status-value">{{ books_in_stock }}</span>
+        <span class="status-label">Sản phẩm còn hàng:</span>
+        <span class="status-value">{{ snacks_in_stock }}</span>
       </div>
       <div class="status-item">
-        <span class="status-label">Sách hết hàng:</span>
-        <span class="status-value">{{ books_out_of_stock }}</span>
+        <span class="status-label">Sản phẩm hết hàng:</span>
+        <span class="status-value">{{ snacks_out_of_stock }}</span>
       </div>
     </div>
 
@@ -308,14 +308,14 @@ Bảng Điều Khiển{% endblock %} {% block extra_css %}
 
     <!-- Top sách bán chạy -->
     <div class="info-card">
-      <h3><i class="fas fa-fire"></i> Sách bán chạy</h3>
-      {% for book in top_books %}
+      <h3><i class="fas fa-fire"></i> Sản phẩm bán chạy</h3>
+      {% for snack in top_snacks %}
       <div class="list-item">
         <div class="item-info">
-          <div class="item-title">{{ book.book__title }}</div>
-          <div class="item-subtitle">{{ book.book__author }}</div>
+          <div class="item-title">{{ snack.snack__title }}</div>
+          <div class="item-subtitle">{{ snack.snack__author }}</div>
         </div>
-        <div class="item-value">{{ book.total_sold }} cuốn</div>
+        <div class="item-value">{{ snack.total_sold }} gói</div>
       </div>
       {% empty %}
       <p style="color: #666; text-align: center; margin: 20px 0">

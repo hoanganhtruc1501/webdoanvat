@@ -1,16 +1,16 @@
-{% extends 'base.html' %} {% block title %}{{ title }} - Bookstore{% endblock %}
-{% block content %}
+{% extends 'base.html' %} {% block title %}{{ title }} - Snackstore{% endblock
+%} {% block content %}
 <div class="container my-5">
   <!-- Hero Section -->
   <div class="jumbotron bg-primary text-white p-5 rounded mb-5">
     <div class="container text-center">
-      <h1 class="display-4">📚 {{ message }}</h1>
-      <p class="lead">Khám phá hàng ngàn cuốn sách hay nhất</p>
+      <h1 class="display-4">🥫{{ message }}</h1>
+      <p class="lead">Khám phá hàng ngàn đồ ăn vặt bán chạy nhất</p>
       <a
         class="btn btn-light btn-lg"
-        href="{% url 'books:list' %}"
+        href="{% url 'snacks:list' %}"
         role="button"
-        >Mua sách ngay</a
+        >Mua ngay tại đây</a
       >
     </div>
   </div>
@@ -20,8 +20,10 @@
     <div class="col-md-4 mb-4">
       <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">📖 Đa dạng thể loại</h5>
-          <p class="card-text">Từ văn học, khoa học đến kỹ năng sống</p>
+          <h5 class="card-title">🍟Đa dạng thể loại</h5>
+          <p class="card-text">
+            Từ chân gà ăn liền, các loại đồ khô, nước uống
+          </p>
         </div>
       </div>
     </div>
