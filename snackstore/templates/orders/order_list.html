@@ -1,32 +1,75 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Đơn hàng của tôi</title>
-</head>
-<body>
-    <h1>Đơn hàng của tôi</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đơn mua - Snackstore</title>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}" />
+  </head>
+  <body class="orders-page">
+    <div class="orders-shell">
+      <header class="orders-topbar">
+        <a class="orders-brand" href="/">SNACK</a>
+        <nav class="orders-nav">
+          <a class="orders-link" href="/">Tiếp tục mua hàng</a>
+          <a class="orders-link" href="{% url 'orders:checkout' %}">Thanh toán</a>
+        </nav>
+      </header>
 
-    {% if guest_mode %}
-        <p>Bạn chưa đăng nhập nên chưa xem được lịch sử đơn hàng tài khoản.</p>
-        <p>Sau khi đặt hàng, bạn vẫn xem lại đơn gần nhất bằng link chi tiết đơn.</p>
-    {% endif %}
+      {% if messages %}
+        <div class="orders-messages">
+          {% for message in messages %}
+            <div class="orders-message">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-    {% if orders %}
-        <ul>
-            {% for order in orders %}
-                <li>
-                    <a href="{% url 'orders:detail' order.id %}">
-                        Đơn #{{ order.id }}
-                    </a>
-                    - {{ order.full_name }}
-                    - {{ order.get_status_display }}
-                    - {{ order.final_total }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Chưa có đơn hàng nào.</p>
-    {% endif %}
-</body>
+      <section class="orders-hero">
+        <h1>Đơn mua</h1>
+        <p>Theo dõi trạng thái và xem lại thông tin các đơn hàng đã đặt.</p>
+      </section>
+
+      {% if guest_mode %}
+        <div class="orders-empty">
+          Bạn cần đăng nhập để xem lịch sử đơn hàng.
+        </div>
+      {% elif orders %}
+        <section class="orders-list">
+          {% for order in orders %}
+            <article class="orders-list-item">
+              <div class="orders-list-header">
+                <div>
+                  <h2>Đơn hàng #{{ order.id }}</h2>
+                  <div class="orders-muted">
+                    {{ order.created_at|date:"d/m/Y H:i" }} - {{ order.items.count }} sản phẩm
+                  </div>
+                </div>
+                <span class="orders-status orders-status-{{ order.get_status_display_color }}">
+                  {{ order.get_status_display }}
+                </span>
+              </div>
+
+              <div class="orders-total-row">
+                <span>Người nhận</span>
+                <strong>{{ order.full_name }}</strong>
+              </div>
+              <div class="orders-total-row">
+                <span>Tổng thanh toán</span>
+                <strong>{{ order.final_total|floatformat:0 }} đ</strong>
+              </div>
+
+              <div class="orders-actions">
+                <a class="orders-button" href="{% url 'orders:detail' order.id %}">Xem chi tiết</a>
+              </div>
+            </article>
+          {% endfor %}
+        </section>
+      {% else %}
+        <div class="orders-empty">
+          Bạn chưa có đơn hàng nào.
+        </div>
+      {% endif %}
+    </div>
+  </body>
 </html>
