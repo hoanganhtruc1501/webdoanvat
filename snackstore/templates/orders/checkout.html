@@ -1,37 +1,127 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Thanh toán</title>
-</head>
-<body>
-    <h1>Thanh toán</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thanh toán - Snackstore</title>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}" />
+  </head>
+  <body class="orders-page">
+    <div class="orders-shell">
+      <header class="orders-topbar">
+        <a class="orders-brand" href="/">SNACK</a>
+        <nav class="orders-nav">
+          <a class="orders-link" href="/">Tiếp tục mua hàng</a>
+          <a class="orders-link" href="{% url 'orders:list' %}">Đơn mua</a>
+        </nav>
+      </header>
 
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+      {% if messages %}
+        <div class="orders-messages">
+          {% for message in messages %}
+            <div class="orders-message">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-    <h2>Sản phẩm trong đơn</h2>
-    <ul>
-        {% for item in cart_items %}
-            <li>
-                {{ item.snack.name }} - SL: {{ item.quantity }} - Giá: {{ item.price }} - Thành tiền: {{ item.item_total }}
-            </li>
-        {% endfor %}
-    </ul>
+      <section class="orders-hero">
+        <h1>Thanh toán đơn hàng</h1>
+        <p>Kiểm tra giỏ hàng và nhập thông tin nhận đồ ăn vặt.</p>
+      </section>
 
-    <p>Tổng số lượng: {{ total_quantity }}</p>
-    <p>Tổng tiền hàng: {{ total_amount }}</p>
-    <p>Phí ship: {{ shipping_fee }}</p>
-    <p><strong>Tổng thanh toán: {{ final_total }}</strong></p>
+      <div class="orders-grid">
+        <section class="orders-panel">
+          <h2>Thông tin giao hàng</h2>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="orders-form-grid">
+              <div class="orders-field">
+                {{ form.full_name.label_tag }}
+                {{ form.full_name }}
+                {% for error in form.full_name.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="orders-field">
+                {{ form.phone.label_tag }}
+                {{ form.phone }}
+                {% for error in form.phone.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="orders-field orders-field-full">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% for error in form.email.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="orders-field orders-field-full">
+                {{ form.address.label_tag }}
+                {{ form.address }}
+                {% for error in form.address.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="orders-field">
+                {{ form.city.label_tag }}
+                {{ form.city }}
+                {% for error in form.city.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="orders-field">
+                {{ form.district.label_tag }}
+                {{ form.district }}
+                {% for error in form.district.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="orders-field">
+                {{ form.ward.label_tag }}
+                {{ form.ward }}
+                {% for error in form.ward.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="orders-field">
+                {{ form.payment_method.label_tag }}
+                {{ form.payment_method }}
+                {% for error in form.payment_method.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="orders-field orders-field-full">
+                {{ form.notes.label_tag }}
+                {{ form.notes }}
+                {% for error in form.notes.errors %}<span class="orders-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
 
-    <h2>Thông tin nhận hàng</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Đặt hàng</button>
-    </form>
-</body>
+            <button class="orders-button" type="submit">Đặt hàng</button>
+          </form>
+        </section>
+
+        <aside class="orders-panel">
+          <h2>Giỏ hàng</h2>
+          <div class="orders-summary-list">
+            {% for item in cart_items %}
+              <div class="orders-summary-item">
+                <div>
+                  <div class="orders-item-name">{{ item.snack.name|default:item.snack }}</div>
+                  <div class="orders-muted">{{ item.quantity }} x {{ item.price|floatformat:0 }} đ</div>
+                </div>
+                <div class="orders-price">{{ item.item_total|floatformat:0 }} đ</div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="orders-total">
+            <div class="orders-total-row">
+              <span>Tổng sản phẩm</span>
+              <strong>{{ total_quantity }}</strong>
+            </div>
+            <div class="orders-total-row">
+              <span>Tiền hàng</span>
+              <strong>{{ total_amount|floatformat:0 }} đ</strong>
+            </div>
+            <div class="orders-total-row">
+              <span>Phí vận chuyển</span>
+              <strong>{{ shipping_fee|floatformat:0 }} đ</strong>
+            </div>
+            <div class="orders-total-row">
+              <span>Tổng thanh toán</span>
+              <strong>{{ final_total|floatformat:0 }} đ</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </body>
 </html>
