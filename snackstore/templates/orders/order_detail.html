@@ -1,36 +1,112 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Chi tiết đơn hàng</title>
-</head>
-<body>
-    <h1>Chi tiết đơn hàng #{{ order.id }}</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đơn hàng #{{ order.id }} - Snackstore</title>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}" />
+  </head>
+  <body class="orders-page">
+    <div class="orders-shell">
+      <header class="orders-topbar">
+        <a class="orders-brand" href="/">SNACK</a>
+        <nav class="orders-nav">
+          <a class="orders-link" href="{% url 'orders:list' %}">Đơn mua</a>
+          <a class="orders-link" href="/">Tiếp tục mua hàng</a>
+        </nav>
+      </header>
 
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+      {% if messages %}
+        <div class="orders-messages">
+          {% for message in messages %}
+            <div class="orders-message">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-    <p>Khách hàng: {{ order.full_name }}</p>
-    <p>SĐT: {{ order.phone }}</p>
-    <p>Email: {{ order.email }}</p>
-    <p>Địa chỉ: {{ order.address }}, {{ order.ward }}, {{ order.district }}, {{ order.city }}</p>
-    <p>Trạng thái: {{ order.get_status_display }}</p>
-    <p>Thanh toán: {{ order.get_payment_method_display }}</p>
+      <section class="orders-hero orders-hero-with-status">
+        <div>
+          <h1>Đơn hàng #{{ order.id }}</h1>
+          <p>Thông tin giao hàng, sản phẩm và tổng thanh toán.</p>
+        </div>
+        <span class="orders-status orders-status-{{ order.get_status_display_color }}">
+          {{ order.get_status_display }}
+        </span>
+      </section>
 
-    <h2>Sản phẩm</h2>
-    <ul>
-        {% for item in order.items.all %}
-            <li>{{ item.snack_name }} - {{ item.quantity }} x {{ item.price }} = {{ item.subtotal }}</li>
-        {% endfor %}
-    </ul>
+      <div class="orders-grid">
+        <section class="orders-panel">
+          <h2>Thông tin giao hàng</h2>
+          <div class="orders-detail-list">
+            <div class="orders-detail-row">
+              <span>Người nhận</span>
+              <strong>{{ order.full_name }}</strong>
+            </div>
+            <div class="orders-detail-row">
+              <span>Số điện thoại</span>
+              <strong>{{ order.phone }}</strong>
+            </div>
+            <div class="orders-detail-row">
+              <span>Email</span>
+              <strong>{{ order.email }}</strong>
+            </div>
+            <div class="orders-detail-row">
+              <span>Địa chỉ</span>
+              <strong>{{ order.address }}, {{ order.ward }}, {{ order.district }}, {{ order.city }}</strong>
+            </div>
+            <div class="orders-detail-row">
+              <span>Ngày đặt</span>
+              <strong>{{ order.created_at|date:"d/m/Y H:i" }}</strong>
+            </div>
+            <div class="orders-detail-row">
+              <span>Thanh toán</span>
+              <strong>{{ order.get_payment_method_display }}</strong>
+            </div>
+            {% if order.notes %}
+              <div class="orders-detail-row">
+                <span>Ghi chú</span>
+                <strong>{{ order.notes }}</strong>
+              </div>
+            {% endif %}
+          </div>
+        </section>
 
-    <p>Tổng tiền hàng: {{ order.total_amount }}</p>
-    <p>Phí ship: {{ order.shipping_fee }}</p>
-    <p><strong>Tổng cộng: {{ order.final_total }}</strong></p>
+        <aside class="orders-panel">
+          <h2>Tổng thanh toán</h2>
+          <div class="orders-total">
+            <div class="orders-total-row">
+              <span>Tiền hàng</span>
+              <strong>{{ order.total_amount|floatformat:0 }} đ</strong>
+            </div>
+            <div class="orders-total-row">
+              <span>Phí vận chuyển</span>
+              <strong>{{ order.shipping_fee|floatformat:0 }} đ</strong>
+            </div>
+            <div class="orders-total-row">
+              <span>Tổng cộng</span>
+              <strong>{{ order.final_total|floatformat:0 }} đ</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
 
-    <p><a href="{% url 'orders:list' %}">Xem danh sách đơn</a></p>
-</body>
+      <section class="orders-panel orders-section">
+        <h2>Sản phẩm trong đơn</h2>
+        <div class="orders-summary-list">
+          {% for item in order.items.all %}
+            <div class="orders-summary-item">
+              <div>
+                <div class="orders-item-name">{{ item.snack_name }}</div>
+                <div class="orders-muted">{{ item.quantity }} x {{ item.price|floatformat:0 }} đ</div>
+              </div>
+              <div class="orders-price">{{ item.subtotal|floatformat:0 }} đ</div>
+            </div>
+          {% empty %}
+            <div class="orders-empty">Đơn hàng này chưa có sản phẩm.</div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </body>
 </html>
