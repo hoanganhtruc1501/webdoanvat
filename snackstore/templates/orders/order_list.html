@@ -1,0 +1,81 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lịch sử đơn hàng - Snackstore{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/order_list.css' %}?v=4" />
+{% endblock %}
+
+{% block content %}
+<section class="order-list-page">
+  <div class="order-list-container">
+    <div class="order-list-hero">
+      <div class="hero-icon">
+        <i class="fas fa-history"></i>
+      </div>
+      <div>
+        <h1>Lịch sử đơn hàng</h1>
+        <p>Theo dõi tình trạng và lịch sử các đơn hàng của bạn</p>
+      </div>
+    </div>
+
+    {% if guest_mode %}
+    <div class="empty-orders-card">
+      <div class="empty-icon"><i class="fas fa-user-lock"></i></div>
+      <h2>Bạn cần đăng nhập</h2>
+      <p>Đăng nhập để xem lịch sử đơn hàng của bạn.</p>
+      <a href="{% url 'snacks:login' %}" class="primary-order-btn">
+        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+      </a>
+    </div>
+    {% elif orders %}
+    <div class="orders-stack">
+      {% for order in orders %}
+      <article class="order-history-card">
+        <div class="order-card-head">
+          <div>
+            <h2>Đơn hàng #{{ order.id }}</h2>
+            <time datetime="{{ order.created_at|date:'c' }}">{{ order.created_at|date:"d/m/Y H:i" }}</time>
+          </div>
+          <span class="status-pill status-{{ order.status }}">{{ order.get_status_display }}</span>
+        </div>
+
+        <div class="order-card-body">
+          <div class="order-meta">
+            <span>{{ order.total_quantity|default:0 }} sản phẩm</span>
+            <span class="dot-separator">•</span>
+            <span>{{ order.get_payment_method_display }}</span>
+          </div>
+
+          <div class="order-actions-row">
+            <strong class="order-total">{{ order.final_total|floatformat:0 }}đ</strong>
+            <a href="{% url 'orders:detail' order_id=order.id %}" class="view-detail-btn">
+              <i class="fas fa-eye"></i> Xem chi tiết
+            </a>
+            {% if order.status == 'pending' %}
+            <form method="post" action="{% url 'orders:cancel' order_id=order.id %}" class="cancel-order-form">
+              {% csrf_token %}
+              <button type="submit" class="cancel-order-btn" onclick="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?');">
+                <i class="fas fa-times"></i> Hủy
+              </button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-orders-card">
+      <div class="empty-icon"><i class="fas fa-receipt"></i></div>
+      <h2>Chưa có đơn hàng nào</h2>
+      <p>Khi bạn đặt hàng, lịch sử đơn hàng sẽ hiển thị tại đây.</p>
+      <a href="{% url 'snacks:list' %}" class="primary-order-btn">
+        <i class="fas fa-shopping-cart"></i> Mua sắm ngay
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -38,7 +38,7 @@
 .footer-logo .logo-icon {
   width: 40px;
   height: 40px;
-  background-color: #7fad39;
+  background-color: #f97316;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -48,7 +48,7 @@
 }
 
 .footer-logo .logo-icon::before {
-  content: "🌿";
+  content: "🍿";
   font-size: 20px;
   color: white;
 }
@@ -56,7 +56,7 @@
 .footer-logo .logo-text {
   font-size: 32px;
   font-weight: bold;
-  color: #333;
+  color: #f97316 !important;
   letter-spacing: 1px;
 }
 
@@ -150,7 +150,7 @@
 }
 
 .subscribe-btn {
-  background-color: #7fad39;
+  background-color: #f97316;
   color: white;
   border: none;
   padding: 15px 25px;
@@ -162,7 +162,7 @@
 }
 
 .subscribe-btn:hover {
-  background-color: #6b9532;
+  background-color: #ea580c;
 }
 
 /* Social Icons */

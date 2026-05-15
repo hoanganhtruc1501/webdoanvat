@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     # Local apps
     # 'pages',      # Trang chủ và trang tĩnh
     'snacks',      # Quản lý sách
-    'cart',       # Giỏ hàng
+    'carts',      # Giỏ hàng
     'orders',     # Đơn hàng
 ]
 
@@ -145,6 +145,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Login/Logout redirect URLs
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = '/snacks/login/'
+LOGIN_URL = '/login/'
 
 

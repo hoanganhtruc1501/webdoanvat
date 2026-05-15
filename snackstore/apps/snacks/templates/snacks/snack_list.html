@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Snackstore{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/snack_list.css' %}?v=2" />
+{% endblock %}
+
+{% block content %}
+<div class="catalog-page">
+  {% include 'components/slider.html' %}
+
+  <form method="get" class="search-form" role="search">
+    {% if selected_category %}
+    <input type="hidden" name="category" value="{{ selected_category.slug }}" />
+    {% endif %}
+
+    <div class="search-inputs">
+      <input
+        type="text"
+        name="q"
+        placeholder="Tìm kiếm theo tên sản phẩm"
+        value="{{ request.GET.q }}"
+        class="search-input"
+      />
+      <button type="submit" class="search-btn">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        Tìm kiếm
+      </button>
+    </div>
+  </form>
+
+  <section class="catalog-layout" aria-label="Danh sách sản phẩm">
+    {% include 'components/categories.html' %}
+
+    <div class="catalog-results">
+      {% if selected_category %}
+      <div class="catalog-heading">
+        <h1>{{ selected_category.name }}</h1>
+        {% if selected_category.description %}
+        <p>{{ selected_category.description }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if page_obj.object_list %}
+      <div class="product-grid">
+        {% for snack in page_obj %}
+        <article class="product-card">
+          <a href="{% url 'snacks:detail' slug=snack.slug %}" class="product-link">
+            <div class="product-image-wrap">
+              {% if snack.image %}
+              <img src="{{ snack.image.url }}" alt="{{ snack.title }}" class="product-image" />
+              {% else %}
+              <div class="product-placeholder">
+                <i class="fas fa-cookie-bite" aria-hidden="true"></i>
+              </div>
+              {% endif %}
+            </div>
+
+            <div class="product-price-row">
+              {% if snack.discount > 0 %}
+              <span class="product-price">{{ snack.get_discounted_price|floatformat:0 }}d</span>
+              <span class="product-original-price">{{ snack.price|floatformat:0 }}d</span>
+              <span class="product-discount">-{{ snack.discount|floatformat:0 }}%</span>
+              {% else %}
+              <span class="product-price">{{ snack.price|floatformat:0 }}d</span>
+              {% endif %}
+            </div>
+
+            <div class="product-author">{{ snack.author }}</div>
+            <h2 class="product-title">{{ snack.title }}</h2>
+
+            <div class="product-meta" aria-label="Đánh giá 4.5 sao">
+              <span class="stars" aria-hidden="true">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </span>
+              <span class="sold-count">Đã bán {{ snack.stock|add:1000 }}</span>
+            </div>
+          </a>
+
+          <a href="{% url 'cart:add' snack_id=snack.id %}" class="add-cart-btn">
+            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+            Thêm vào giỏ
+          </a>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-products">
+        <h2>Chưa có sản phẩm</h2>
+        <p>Hãy thêm sản phẩm trong trang quản trị hoặc nạp dữ liệu mẫu.</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {% include 'components/reviews.html' %}
+  {% include 'components/home_service.html' %}
+</div>
+{% endblock %}

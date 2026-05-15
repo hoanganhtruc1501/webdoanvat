@@ -1,0 +1,166 @@
+{% extends "base.html" %} {% load static %} {% block title %}Giỏ hàng -
+Snackstore{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+{% endblock %} {% block content %}
+<div class="container">
+  <h1>Giỏ hàng của bạn</h1>
+
+  {% if cart_items %}
+  <div class="cart-summary">
+    <div class="cart-info">
+      <span class="cart-count">{{ total_quantity }} sản phẩm</span>
+      <span class="cart-total">
+        Tạm tính:
+        <strong>{{ total_amount|floatformat:0 }} VNĐ</strong>
+      </span>
+    </div>
+    <div class="cart-actions">
+      <a href="{% url 'cart:clear' %}" class="btn-clear">
+        <i class="fas fa-trash"></i> Xóa giỏ hàng
+      </a>
+      <a href="{% url 'orders:checkout' %}" class="btn-checkout">
+        <i class="fas fa-credit-card"></i> Thanh toán
+      </a>
+    </div>
+  </div>
+
+  <div class="cart-items">
+    {% for item in cart_items %}
+    <div class="cart-item">
+      <div class="item-image">
+        <a href="{% url 'snacks:detail' slug=item.snack.slug %}">
+          {% if item.snack.image %}
+          <img src="{{ item.snack.image.url }}" alt="{{ item.snack.title }}" />
+          {% else %}
+          <img
+            src="{% static 'images/no-image.png' %}"
+            alt="{{ item.snack.title }}"
+          />
+          {% endif %}
+        </a>
+      </div>
+
+      <div class="item-details">
+        <h3>
+          <a href="{% url 'snacks:detail' slug=item.snack.slug %}">
+            {{ item.snack.title }}
+          </a>
+        </h3>
+        <p class="item-author">Thương hiệu: {{ item.snack.author }}</p>
+        {% if item.snack.category %}
+        <p class="item-category">Danh mục: {{ item.snack.category.name }}</p>
+        {% endif %}
+        <p class="item-price">Đơn giá: {{ item.price|floatformat:0 }} VNĐ</p>
+        <p class="item-stock">Còn {{ item.snack.stock }} sản phẩm</p>
+      </div>
+
+      <div class="item-quantity">
+        <form
+          method="post"
+          action="{% url 'cart:update' snack_id=item.snack.id %}"
+          class="quantity-form"
+        >
+          {% csrf_token %}
+          <label for="quantity-{{ item.snack.id }}">Số lượng</label>
+          <div class="quantity-controls">
+            <button
+              type="button"
+              class="qty-btn"
+              data-action="minus"
+              data-target="quantity-{{ item.snack.id }}"
+            >
+              -
+            </button>
+            <input
+              type="number"
+              id="quantity-{{ item.snack.id }}"
+              name="quantity"
+              value="{{ item.quantity }}"
+              min="1"
+              max="{{ item.snack.stock }}"
+              class="quantity-input"
+            />
+            <button
+              type="button"
+              class="qty-btn"
+              data-action="plus"
+              data-target="quantity-{{ item.snack.id }}"
+            >
+              +
+            </button>
+          </div>
+          <button type="submit" class="btn-update">Cập nhật</button>
+        </form>
+      </div>
+
+      <div class="item-total">
+        <p class="total-label">Thành tiền</p>
+        <p class="total-amount">{{ item.item_total|floatformat:0 }} VNĐ</p>
+      </div>
+
+      <div class="item-actions">
+        <a
+          href="{% url 'cart:remove' snack_id=item.snack.id %}"
+          class="btn-remove"
+        >
+          Xóa
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="cart-footer">
+    <div class="cart-total-section">
+      <div class="total-breakdown">
+        <div class="total-row">
+          <span>Tạm tính</span>
+          <span>{{ total_amount|floatformat:0 }} VNĐ</span>
+        </div>
+        <div class="total-row">
+          <span>Phí vận chuyển</span>
+          <span>{{ shipping_fee|floatformat:0 }} VNĐ</span>
+        </div>
+        <div class="total-row total-price-row">
+          <span>Tổng cộng</span>
+          <span class="final-total">{{ final_total|floatformat:0 }} VNĐ</span>
+        </div>
+      </div>
+      <div class="checkout-section">
+        <a href="{% url 'snacks:list' %}" class="btn-continue"
+          >Tiếp tục mua hàng</a
+        >
+        <a href="{% url 'orders:checkout' %}" class="btn-checkout-main"
+          >Thanh toán</a
+        >
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-cart">
+    <div class="empty-cart-icon">
+      <i class="fas fa-shopping-bag"></i>
+    </div>
+    <h2>Giỏ hàng đang trống</h2>
+    <p>Bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
+    <a href="{% url 'snacks:list' %}" class="btn-shop-now">Mua hàng ngay</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  document.querySelectorAll(".qty-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const input = document.getElementById(button.dataset.target);
+      const current = Number.parseInt(input.value || "1", 10);
+      const min = Number.parseInt(input.min || "1", 10);
+      const max = Number.parseInt(input.max || "999", 10);
+      const next =
+        button.dataset.action === "plus"
+          ? Math.min(current + 1, max)
+          : Math.max(current - 1, min);
+      input.value = next;
+    });
+  });
+</script>
+{% endblock %}

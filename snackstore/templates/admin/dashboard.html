@@ -69,7 +69,7 @@ Bảng Điều Khiển{% endblock %} {% block extra_css %}
     font-weight: 500;
   }
 
-  .books {
+  .snacks {
     color: #28a745;
   }
   .orders {
@@ -264,6 +264,14 @@ Bảng Điều Khiển{% endblock %} {% block extra_css %}
       <div class="stat-number users">{{ total_users }}</div>
       <div class="stat-label">Tổng người dùng</div>
     </div>
+
+    <div class="stat-card">
+      <div class="stat-icon revenue">
+        <i class="fas fa-coins"></i>
+      </div>
+      <div class="stat-number revenue">{{ total_revenue|floatformat:0 }}đ</div>
+      <div class="stat-label">Doanh thu hoàn thành</div>
+    </div>
   </div>
 
   <!-- Thông tin chi tiết -->
@@ -340,7 +348,7 @@ Bảng Điều Khiển{% endblock %} {% block extra_css %}
         </div>
       </div>
       <div class="item-value">
-        {{ order.get_total_with_shipping|floatformat:0 }}₫
+        {{ order.final_total|floatformat:0 }}đ
       </div>
     </div>
     {% empty %}

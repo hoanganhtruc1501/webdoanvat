@@ -1,0 +1,191 @@
+﻿{% extends 'base.html' %} {% load static %} {% block title %}Thanh toán -
+Snackstore{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}?v=1" />
+{% endblock %} {% block content %}
+<section class="checkout-page">
+  <div class="checkout-container">
+    <div class="checkout-hero">
+      <div class="checkout-hero-icon">
+        <i class="fas fa-credit-card"></i>
+      </div>
+      <div>
+        <h1>Thanh toán đơn hàng</h1>
+        <p>Vui lòng kiểm tra thông tin và điền đầy đủ địa chỉ giao hàng</p>
+      </div>
+    </div>
+
+    <a href="{% url 'cart:detail' %}" class="back-to-cart">
+      <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng
+    </a>
+
+    <form method="post" class="checkout-layout" novalidate>
+      {% csrf_token %}
+
+      <div class="checkout-card checkout-form-card">
+        {% if form.non_field_errors %}
+        <div class="checkout-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="checkout-section-title">
+          <span><i class="fas fa-user"></i> Thông tin khách hàng</span>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field full">
+            <label for="{{ form.full_name.id_for_label }}"
+              >Họ và tên <span>*</span></label
+            >
+            {{ form.full_name }} {{ form.full_name.errors }}
+          </div>
+
+          <div class="form-field half">
+            <label for="{{ form.email.id_for_label }}"
+              >Email <span>*</span></label
+            >
+            {{ form.email }} {{ form.email.errors }}
+          </div>
+
+          <div class="form-field half">
+            <label for="{{ form.phone.id_for_label }}"
+              >Số điện thoại <span>*</span></label
+            >
+            {{ form.phone }} {{ form.phone.errors }}
+          </div>
+        </div>
+
+        <div class="checkout-section-title address-title">
+          <span><i class="fas fa-map-marker-alt"></i> Địa chỉ giao hàng</span>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field third">
+            <label for="{{ form.city.id_for_label }}"
+              >Tỉnh/Thành phố <span>*</span></label
+            >
+            {{ form.city }} {{ form.city.errors }}
+          </div>
+
+          <div class="form-field third">
+            <label for="{{ form.district.id_for_label }}"
+              >Quận/Huyện <span>*</span></label
+            >
+            {{ form.district }} {{ form.district.errors }}
+          </div>
+
+          <div class="form-field third">
+            <label for="{{ form.ward.id_for_label }}"
+              >Phường/Xã <span>*</span></label
+            >
+            {{ form.ward }} {{ form.ward.errors }}
+          </div>
+
+          <div class="form-field full">
+            <label for="{{ form.address.id_for_label }}"
+              >Địa chỉ chi tiết <span>*</span></label
+            >
+            {{ form.address }} {{ form.address.errors }}
+          </div>
+
+          <div class="form-field full">
+            <label for="{{ form.notes.id_for_label }}">Ghi chú</label>
+            {{ form.notes }} {{ form.notes.errors }}
+          </div>
+        </div>
+
+        <div class="checkout-section-title payment-title">
+          <span><i class="fas fa-wallet"></i> Phương thức thanh toán</span>
+        </div>
+
+        <label class="payment-option">
+          <input type="radio" name="payment_method" value="cod" checked />
+          <span class="payment-copy">
+            <strong>Thanh toán khi nhận hàng</strong>
+            <small>Thanh toán bằng tiền mặt khi nhận hàng</small>
+          </span>
+        </label>
+        {{ form.payment_method.errors }}
+
+        <button type="submit" class="place-order-btn">
+          <i class="fas fa-check"></i> Xác nhận đặt hàng
+        </button>
+      </div>
+
+      <aside class="checkout-card order-summary-card">
+        <div class="summary-title">
+          <i class="fas fa-receipt"></i> Tóm tắt đơn hàng
+        </div>
+
+        <div class="summary-items">
+          {% for item in cart_items %}
+          <div class="summary-item">
+            <div class="summary-image">
+              {% if item.snack.image %}
+              <img
+                src="{{ item.snack.image.url }}"
+                alt="{{ item.snack.title }}"
+              />
+              {% else %}
+              <div class="summary-placeholder">
+                <i class="fas fa-cookie-bite"></i>
+              </div>
+              {% endif %}
+            </div>
+            <div class="summary-info">
+              <h3>{{ item.snack.title }}</h3>
+              <div class="summary-price-row">
+                <span>{{ item.price|floatformat:0 }}d</span>
+                <strong>x{{ item.quantity }}</strong>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="promotion-box">
+          <label for="promotion_code">Mã giảm giá</label>
+          <div class="promotion-controls">
+            <input
+              type="text"
+              id="promotion_code"
+              name="promotion_code"
+              value="{{ promotion_code }}"
+              placeholder="VD: SNACK10"
+            />
+            <button type="submit" name="apply_promotion" value="1">Áp dụng</button>
+          </div>
+          {% if promotion %}
+          <button type="submit" name="remove_promotion" value="1" class="remove-promotion-btn">
+            Xóa mã {{ promotion.code }}
+          </button>
+          {% endif %}
+        </div>
+
+        <div class="summary-totals">
+          <div class="summary-row">
+            <span>Tổng tính ({{ total_quantity }} sản phẩm)</span>
+            <strong>{{ total_amount|floatformat:0 }}d</strong>
+          </div>
+          {% if discount_amount > 0 %}
+          <div class="summary-row discount-row">
+            <span>Giảm giá{% if promotion %} ({{ promotion.code }}){% endif %}</span>
+            <strong>-{{ discount_amount|floatformat:0 }}d</strong>
+          </div>
+          {% endif %}
+          <div class="summary-row">
+            <span>Phí vận chuyển</span>
+            {% if shipping_fee > 0 %}
+            <strong>{{ shipping_fee|floatformat:0 }}d</strong>
+            {% else %}
+            <strong class="free-shipping">Miễn phí</strong>
+            {% endif %}
+          </div>
+          <div class="summary-row total-row">
+            <span>Tổng cộng</span>
+            <strong>{{ final_total|floatformat:0 }}d</strong>
+          </div>
+        </div>
+      </aside>
+    </form>
+  </div>
+</section>
+{% endblock %}

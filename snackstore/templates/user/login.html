@@ -5,11 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng nhập - Snack Snackstore</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}?v=orange-login-1" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <style>
+      .auth-logo-icon {
+        background: linear-gradient(135deg, #ffedd5, #fdba74) !important;
+        box-shadow: inset 0 0 0 2px rgba(249, 115, 22, 0.22) !important;
+      }
+
+      .auth-logo-text {
+        color: #f97316 !important;
+      }
+
+      .form-control:focus {
+        border-color: #f97316 !important;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.16) !important;
+      }
+
+      .btn-auth {
+        background: linear-gradient(135deg, #f97316, #ea580c) !important;
+      }
+
+      .btn-auth:hover {
+        background: linear-gradient(135deg, #fb923c, #c2410c) !important;
+        box-shadow: 0 10px 26px rgba(234, 88, 12, 0.3) !important;
+      }
+
+      .auth-link {
+        color: #ea580c !important;
+      }
+
+      .auth-link:hover {
+        color: #c2410c !important;
+      }
+    </style>
   </head>
   <body>
     <div class="auth-container">
@@ -26,10 +58,11 @@
         {% if form.errors %}
         <div class="error-message">
           <ul>
-            {% for field, errors in form.errors.items %} {% for error in errors
-            %}
+            {% for field, errors in form.errors.items %}
+            {% for error in errors %}
             <li>{{ error }}</li>
-            {% endfor %} {% endfor %}
+            {% endfor %}
+            {% endfor %}
           </ul>
         </div>
         {% endif %}
