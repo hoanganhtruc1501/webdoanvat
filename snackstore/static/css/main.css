@@ -1,45 +1,36 @@
-/* Custom CSS for Bookstore */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Global helpers for Snackstore */
+.jumbotron,
+.card,
+.row,
+.col-md-4,
+.lead,
+.display-4 {
+  font-family: inherit;
 }
 
-.jumbotron {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+.alert,
+.messages .alert {
+  width: min(1180px, calc(100% - 32px));
+  margin: 14px auto;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
 }
 
-.navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
+.alert-success { border-color: rgba(34, 197, 94, 0.24); color: #166534; background: #f0fdf4; }
+.alert-warning { border-color: rgba(245, 158, 11, 0.26); color: #92400e; background: #fffbeb; }
+.alert-error,
+.alert-danger { border-color: rgba(239, 68, 68, 0.25); color: #991b1b; background: #fef2f2; }
+
+.empty-products,
+.empty-cart,
+.empty-orders-card {
+  border-radius: 24px !important;
 }
 
-.card {
-    transition: transform 0.2s;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-footer {
-    margin-top: auto;
-}
-
-.alert {
-    border-radius: 0.5rem;
-}
-
-/* Loading animation */
 .loading {
-    text-align: center;
-    padding: 2rem;
+  text-align: center;
+  padding: 2rem;
 }
-
-/* Responsive */
-@media (max-width: 768px) {
-    .jumbotron h1 {
-        font-size: 2rem;
-    }
-} 
