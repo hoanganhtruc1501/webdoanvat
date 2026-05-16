@@ -109,5 +109,27 @@ class Review(models.Model):
             models.UniqueConstraint(fields=["snack", "user"], name="unique_review_per_user_snack")
         ]
 
+        
+
     def __str__(self):
         return f"{self.snack.title} - {self.user.username} ({self.rating} sao)"
+
+class HomeComment(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="home_comments",
+        verbose_name="Người dùng",
+    )
+    comment = models.TextField(verbose_name="Nội dung comment")
+    is_active = models.BooleanField(default=True, verbose_name="Hiển thị")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Ngày tạo")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Ngày cập nhật")
+
+    class Meta:
+        verbose_name = "Comment trang chủ"
+        verbose_name_plural = "Comment trang chủ"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user.username} - {self.created_at:%d/%m/%Y %H:%M}"
