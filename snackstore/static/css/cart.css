@@ -517,3 +517,54 @@ body {
     font-size: 20px;
   }
 }
+
+
+/* Modern Snackstore cart overrides */
+body { background: var(--bg); }
+.container {
+  width: min(1180px, calc(100% - 32px));
+  max-width: none;
+  margin: 28px auto 0;
+  padding: 0;
+}
+.container h1 {
+  margin: 0 0 24px;
+  color: #111827;
+  font-size: clamp(30px, 4vw, 46px);
+  letter-spacing: -0.055em;
+  font-weight: 950;
+}
+.cart-summary,
+.cart-item,
+.cart-footer,
+.empty-cart {
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 26px;
+  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.96);
+}
+.cart-summary { padding: 24px; }
+.cart-total strong,
+.item-price,
+.total-amount,
+.final-total { color: #e11d48; }
+.cart-item { grid-template-columns: 118px 1fr auto auto auto; padding: 20px; }
+.item-image img { width: 104px; height: 104px; object-fit: contain; border-radius: 20px; background: #fefce8; }
+.item-details h3 { font-weight: 900; }
+.item-details h3 a:hover { color: var(--primary-dark); }
+.btn-checkout,
+.btn-checkout-main,
+.btn-shop-now,
+.btn-update {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 12px 24px rgba(234, 179, 8, 0.18);
+}
+.btn-clear,
+.btn-remove { background: #ef4444; }
+.btn-continue { background: #111827; }
+.quantity-controls { border-radius: 14px; border-color: #e5e7eb; }
+.qty-btn:hover { color: var(--primary-dark); background: #fefce8; }
+.total-price-row { border-bottom-color: rgba(250, 204, 21, .32); }
+.empty-cart-icon { color: var(--primary); opacity: .9; }
+@media (max-width: 1024px) { .cart-item { grid-template-columns: 96px 1fr; } }
+@media (max-width: 768px) { .container { width: min(100% - 24px, 1180px); } }
