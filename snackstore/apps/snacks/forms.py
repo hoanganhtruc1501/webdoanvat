@@ -38,3 +38,17 @@ class ReviewForm(forms.ModelForm):
                 }
             ),
         }
+
+class HomeCommentForm(forms.ModelForm):
+    class Meta:
+        model = HomeComment
+        fields = ("comment",)
+        widgets = {
+            "comment": forms.Textarea(
+                attrs={
+                    "class": "home-comment-control",
+                    "rows": 5,
+                    "placeholder": "Chia sẻ trải nghiệm của bạn tại Snackstore",
+                }
+            ),
+        }
