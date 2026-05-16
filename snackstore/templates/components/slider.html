@@ -1,197 +1,42 @@
 {% load static %}
 
-<!-- Slick Slider CSS -->
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
-/>
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"
-/>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
 
-<!-- Banner Slider -->
-<div class="banner-slider">
-  <div class="slide">
-    <img src="../../media/snacks/banner1.jpg" alt="Banner 1" />
+<section class="hero-banner hero-slider" aria-label="Banner giới thiệu Snackstore">
+  <div class="hero-copy">
+    <span class="hero-eyebrow"><i class="fas fa-bolt"></i> Ưu đãi đồ ăn vặt hôm nay</span>
+    <h1>Snack ngon, giao nhanh, giá cực dễ thương</h1>
+    <p>Khám phá bánh tráng, chân gà, snack, nước uống và nhiều món ăn vặt được chọn lọc cho bạn.</p>
+    <div class="hero-actions">
+      <a href="#products" class="hero-btn primary"><i class="fas fa-shopping-basket"></i> Mua ngay</a>
+      <a href="#reviews-title" class="hero-btn secondary">Xem đánh giá</a>
+    </div>
+    <div class="hero-stats" aria-label="Điểm mạnh của cửa hàng">
+      <span><strong>1-3 ngày</strong> giao hàng</span>
+      <span><strong>100%</strong> đóng gói kỹ</span>
+      <span><strong>24/7</strong> hỗ trợ</span>
+    </div>
   </div>
-  <div class="slide">
-    <img src="../../media/snacks/banner2.jpg" alt="Banner 2" />
+
+  <div class="hero-media" aria-label="Ảnh banner sản phẩm">
+    <div class="hero-slides banner-slider">
+      <div class="hero-slide"><img src="/media/snacks/Banner1.jpg" alt="Banner đồ ăn vặt Snackstore 1" /></div>
+      <div class="hero-slide"><img src="/media/snacks/banner2.jpg" alt="Banner đồ ăn vặt Snackstore 2" /></div>
+      <div class="hero-slide"><img src="/media/snacks/banner3.jpg" alt="Banner đồ ăn vặt Snackstore 3" /></div>
+      <div class="hero-slide"><img src="/media/snacks/banner4.jpg" alt="Banner đồ ăn vặt Snackstore 4" /></div>
+    </div>
+
+    <div class="floating-card top-card"><i class="fas fa-star"></i> Sản phẩm bán chạy</div>
+    <div class="floating-card bottom-card"><i class="fas fa-truck-fast"></i> Giao hàng nhanh</div>
   </div>
-  <div class="slide">
-    <img src="../../media/snacks/banner3.jpg" alt="Banner 3" />
-  </div>
-  <div class="slide">
-    <img src="../../media/snacks/banner4.jpg" alt="Banner 4" />
-  </div>
-</div>
-
-<!-- Slider Styles -->
-<style>
-  .banner-slider {
-    margin: 20px auto;
-    max-width: 1200px;
-  }
-
-  .slide {
-    outline: none;
-  }
-
-  .slide img {
-    width: 100%;
-    height: 400px;
-    object-fit: fill;
-    border-radius: 10px;
-  }
-
-  /* Custom Slick Navigation */
-  .slick-prev,
-  .slick-next {
-    font-size: 0;
-    line-height: 0;
-    position: absolute;
-    top: 50%;
-    display: block;
-    width: 50px;
-    height: 50px;
-    padding: 0;
-    transform: translate(0, -50%);
-    cursor: pointer;
-    color: transparent;
-    border: none;
-    outline: none;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    z-index: 10;
-    transition: all 0.3s ease;
-  }
-
-  .slick-prev:hover,
-  .slick-next:hover {
-    background: rgba(0, 0, 0, 0.8);
-  }
-
-  .slick-prev {
-    left: 20px;
-  }
-
-  .slick-next {
-    right: 20px;
-  }
-
-  .slick-prev:before,
-  .slick-next:before {
-    font-family: "Font Awesome 6 Free";
-    font-weight: 900;
-    font-size: 20px;
-    line-height: 1;
-    opacity: 1;
-    color: white;
-  }
-
-  .slick-prev:before {
-    content: "\f104"; /* fa-angle-left */
-  }
-
-  .slick-next:before {
-    content: "\f105"; /* fa-angle-right */
-  }
-
-  /* Custom Dots */
-  .slick-dots {
-    bottom: 20px;
-    text-align: center;
-  }
-
-  .slick-dots li {
-    position: relative;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin: 0 5px;
-    padding: 0;
-    cursor: pointer;
-  }
-
-  .slick-dots li button {
-    font-size: 0;
-    line-height: 0;
-    display: block;
-    width: 20px;
-    height: 20px;
-    padding: 5px;
-    cursor: pointer;
-    color: transparent;
-    border: 0;
-    outline: none;
-    background: transparent;
-  }
-
-  .slick-dots li button:before {
-    font-size: 12px;
-    line-height: 20px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    content: "•";
-    text-align: center;
-    opacity: 0.5;
-    color: white;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-  }
-
-  .slick-dots li.slick-active button:before {
-    opacity: 1;
-    color: white;
-    background: rgba(0, 123, 255, 0.8);
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .slide img {
-      height: 250px;
-    }
-
-    .slick-prev,
-    .slick-next {
-      width: 40px;
-      height: 40px;
-    }
-
-    .slick-prev:before,
-    .slick-next:before {
-      font-size: 16px;
-    }
-
-    .slick-prev {
-      left: 10px;
-    }
-
-    .slick-next {
-      right: 10px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .slide img {
-      height: 200px;
-    }
-  }
-</style>
+</section>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script
-  type="text/javascript"
-  src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
-></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
-    $(".banner-slider").slick({
+    $(".banner-slider").not(".slick-initialized").slick({
       infinite: true,
       slidesToShow: 1,
       slidesToScroll: 1,
