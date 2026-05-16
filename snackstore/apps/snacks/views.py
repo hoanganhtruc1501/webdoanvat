@@ -1,4 +1,5 @@
 from decimal import Decimal
+from urllib.parse import quote
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -7,13 +8,20 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.db.models import Q, Sum, Count
 from django.core.paginator import Paginator
-from .models import Category, Snack
-from .forms import CustomUserCreationForm, ReviewForm
+from django.urls import reverse
+from .models import Category, HomeComment, Snack
+from .forms import CustomUserCreationForm, HomeCommentForm, ReviewForm
 from orders.models import Order, OrderItem
 from datetime import datetime, timedelta
 from django.utils import timezone
 
 
+def get_snack_list_redirect_url(request):
+    params = request.GET.copy()
+    params.pop("edit_comment", None)
+    query_string = params.urlencode()
+    return f"{request.path}?{query_string}" if query_string else request.path
+    
 def snack_list_view(request):
     query = request.GET.get('q')
     min_price = request.GET.get('min_price')
@@ -60,6 +68,70 @@ def snack_list_view(request):
     if category_slug:
         filter_params['category'] = category_slug
 
+    redirect_url = get_snack_list_redirect_url(request)
+    home_comments = HomeComment.objects.filter(is_active=True).select_related('user')
+    editing_comment = None
+
+    if request.user.is_authenticated and request.GET.get("edit_comment"):
+        editing_comment = HomeComment.objects.filter(
+            pk=request.GET.get("edit_comment"),
+            user=request.user,
+            is_active=True,
+        ).first()
+
+    if editing_comment:
+        home_comment_form = HomeCommentForm(instance=editing_comment)
+    else:
+        home_comment_form = HomeCommentForm()
+
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.warning(request, "Bạn cần đăng nhập để gửi comment.")
+            return redirect(f"{reverse('snacks:login')}?next={quote(redirect_url, safe='/')}")
+
+        action = request.POST.get("action", "create")
+        comment_id = request.POST.get("comment_id")
+
+        if action == "delete":
+            home_comment = HomeComment.objects.filter(
+                pk=comment_id,
+                user=request.user,
+                is_active=True,
+            ).first()
+            if not home_comment:
+                messages.error(request, "Không tìm thấy comment để xóa.")
+                return redirect(redirect_url)
+
+            home_comment.delete()
+            messages.success(request, "Comment đã được xóa.")
+            return redirect(redirect_url)
+
+        if action == "update":
+            editing_comment = HomeComment.objects.filter(
+                pk=comment_id,
+                user=request.user,
+                is_active=True,
+            ).first()
+            if not editing_comment:
+                messages.error(request, "Không tìm thấy comment để chỉnh sửa.")
+                return redirect(redirect_url)
+
+            home_comment_form = HomeCommentForm(request.POST, instance=editing_comment)
+            if home_comment_form.is_valid():
+                home_comment_form.save()
+                messages.success(request, "Comment của bạn đã được cập nhật.")
+                return redirect(redirect_url)
+        else:
+            home_comment_form = HomeCommentForm(request.POST)
+            if home_comment_form.is_valid():
+                home_comment = home_comment_form.save(commit=False)
+                home_comment.user = request.user
+                home_comment.is_active = True
+                home_comment.save()
+                messages.success(request, "Comment của bạn đã được gửi.")
+                return redirect(redirect_url)
+
+
     context = {
         'page_obj': page_obj,
         'categories': categories,
@@ -71,6 +143,9 @@ def snack_list_view(request):
         'filter_params': filter_params,
         'has_filters': bool(query or min_price or max_price or category_slug),
         'page_title': f'Sách - {selected_category.name}' if selected_category else 'Danh Sách Sách',
+        'home_comments': home_comments,
+        'home_comment_form': home_comment_form,
+        'editing_comment': editing_comment,
     }
     return render(request, 'snacks/snack_list.html', context)
 
