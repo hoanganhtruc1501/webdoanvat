@@ -1,4 +1,4 @@
-﻿.order-list-page {
+.order-list-page {
   min-height: calc(100vh - 80px);
   padding: 32px 16px 80px;
   background: #fff;
@@ -17,11 +17,11 @@
   margin-bottom: 42px;
   padding: 36px 28px;
   border-radius: 10px;
-  color: #7c2d12;
+  color: #713f12;
   text-align: center;
-  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 48%, #fed7aa 100%);
-  border: 1px solid #fdba74;
-  box-shadow: 0 16px 36px rgba(234, 88, 12, 0.14);
+  background: linear-gradient(135deg, #fefce8 0%, #fef3c7 48%, #fde68a 100%);
+  border: 1px solid #facc15;
+  box-shadow: 0 16px 36px rgba(234, 179, 8, 0.14);
 }
 
 .hero-icon {
@@ -40,7 +40,7 @@
   margin: 8px 0 0;
   font-size: 19px;
   font-weight: 600;
-  color: #9a3412;
+  color: #854d0e;
 }
 
 .orders-stack {
@@ -279,3 +279,12 @@
     width: 100%;
   }
 }
+
+/* Modern Snackstore order list overrides */
+.order-list-page { background: transparent; }
+.order-list-hero,
+.primary-order-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+.order-list-hero { border-radius: 28px; box-shadow: 0 18px 42px rgba(234, 179, 8, .2); }
+.order-history-card, .empty-orders-card { border-radius: 26px; border-color: rgba(226,232,240,.95); box-shadow: var(--shadow-sm); }
+.view-detail-btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+.order-total { color: #e11d48; }
