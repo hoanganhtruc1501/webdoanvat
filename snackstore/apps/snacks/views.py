@@ -1,5 +1,3 @@
-from decimal import Decimal
-from urllib.parse import quote
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -8,20 +6,13 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.db.models import Q, Sum, Count
 from django.core.paginator import Paginator
-from django.urls import reverse
-from .models import Category, HomeComment, Snack
-from .forms import CustomUserCreationForm, HomeCommentForm, ReviewForm
+from .models import Category, Snack
+from .forms import CustomUserCreationForm
 from orders.models import Order, OrderItem
 from datetime import datetime, timedelta
 from django.utils import timezone
 
 
-def get_snack_list_redirect_url(request):
-    params = request.GET.copy()
-    params.pop("edit_comment", None)
-    query_string = params.urlencode()
-    return f"{request.path}?{query_string}" if query_string else request.path
-    
 def snack_list_view(request):
     query = request.GET.get('q')
     min_price = request.GET.get('min_price')
@@ -68,70 +59,6 @@ def snack_list_view(request):
     if category_slug:
         filter_params['category'] = category_slug
 
-    redirect_url = get_snack_list_redirect_url(request)
-    home_comments = HomeComment.objects.filter(is_active=True).select_related('user')
-    editing_comment = None
-
-    if request.user.is_authenticated and request.GET.get("edit_comment"):
-        editing_comment = HomeComment.objects.filter(
-            pk=request.GET.get("edit_comment"),
-            user=request.user,
-            is_active=True,
-        ).first()
-
-    if editing_comment:
-        home_comment_form = HomeCommentForm(instance=editing_comment)
-    else:
-        home_comment_form = HomeCommentForm()
-
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
-            messages.warning(request, "Bạn cần đăng nhập để gửi comment.")
-            return redirect(f"{reverse('snacks:login')}?next={quote(redirect_url, safe='/')}")
-
-        action = request.POST.get("action", "create")
-        comment_id = request.POST.get("comment_id")
-
-        if action == "delete":
-            home_comment = HomeComment.objects.filter(
-                pk=comment_id,
-                user=request.user,
-                is_active=True,
-            ).first()
-            if not home_comment:
-                messages.error(request, "Không tìm thấy comment để xóa.")
-                return redirect(redirect_url)
-
-            home_comment.delete()
-            messages.success(request, "Comment đã được xóa.")
-            return redirect(redirect_url)
-
-        if action == "update":
-            editing_comment = HomeComment.objects.filter(
-                pk=comment_id,
-                user=request.user,
-                is_active=True,
-            ).first()
-            if not editing_comment:
-                messages.error(request, "Không tìm thấy comment để chỉnh sửa.")
-                return redirect(redirect_url)
-
-            home_comment_form = HomeCommentForm(request.POST, instance=editing_comment)
-            if home_comment_form.is_valid():
-                home_comment_form.save()
-                messages.success(request, "Comment của bạn đã được cập nhật.")
-                return redirect(redirect_url)
-        else:
-            home_comment_form = HomeCommentForm(request.POST)
-            if home_comment_form.is_valid():
-                home_comment = home_comment_form.save(commit=False)
-                home_comment.user = request.user
-                home_comment.is_active = True
-                home_comment.save()
-                messages.success(request, "Comment của bạn đã được gửi.")
-                return redirect(redirect_url)
-
-
     context = {
         'page_obj': page_obj,
         'categories': categories,
@@ -143,51 +70,23 @@ def snack_list_view(request):
         'filter_params': filter_params,
         'has_filters': bool(query or min_price or max_price or category_slug),
         'page_title': f'Sách - {selected_category.name}' if selected_category else 'Danh Sách Sách',
-        'home_comments': home_comments,
-        'home_comment_form': home_comment_form,
-        'editing_comment': editing_comment,
     }
     return render(request, 'snacks/snack_list.html', context)
 
 
 def snack_detail_view(request, slug):
     snack = get_object_or_404(Snack, slug=slug)
-    reviews = snack.reviews.filter(is_active=True).select_related('user')
-    user_review = None
-
-    if request.user.is_authenticated:
-        user_review = snack.reviews.filter(user=request.user).first()
-
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
-            messages.warning(request, "Ban can dang nhap de danh gia san pham.")
-            return redirect(f"/login/?next={request.path}")
-
-        review_form = ReviewForm(request.POST, instance=user_review)
-        if review_form.is_valid():
-            review = review_form.save(commit=False)
-            review.snack = snack
-            review.user = request.user
-            review.is_active = True
-            review.save()
-            messages.success(request, "Cam on ban da gui danh gia san pham.")
-            return redirect('snacks:detail', slug=snack.slug)
-    else:
-        review_form = ReviewForm(instance=user_review)
-
+    
     # Lấy các sản phẩm cùng category (trừ sản phẩm hiện tại)
     related_snacks = []
     if snack.category:
         related_snacks = Snack.objects.filter(
             category=snack.category
         ).exclude(slug=slug)[:6]  # Lấy tối đa 6 sản phẩm liên quan
-
+    
     context = {
         'snack': snack,
         'related_snacks': related_snacks,
-        'reviews': reviews,
-        'review_form': review_form,
-        'user_review': user_review,
         'page_title': snack.title,
     }
     return render(request, 'snacks/snack_detail.html', context)
@@ -223,76 +122,81 @@ def is_admin(user):
 @user_passes_test(is_admin)
 def admin_dashboard_view(request):
     """Trang dashboard admin với thống kê"""
-
+    
     # Thống kê cơ bản
     total_snacks = Snack.objects.count()
     total_orders = Order.objects.count()
     total_users = User.objects.count()
-
+    
     # Thống kê sách
     snacks_in_stock = Snack.objects.filter(stock__gt=0).count()
     snacks_out_of_stock = Snack.objects.filter(stock=0).count()
-
+    
     # Thống kê đơn hàng theo trạng thái
     orders_pending = Order.objects.filter(status='pending').count()
     orders_processing = Order.objects.filter(status='processing').count()
-    orders_shipped = Order.objects.filter(status='shipping').count()
-    orders_delivered = Order.objects.filter(status='completed').count()
+    orders_shipped = Order.objects.filter(status='shipped').count()
+    orders_delivered = Order.objects.filter(status='delivered').count()
     orders_cancelled = Order.objects.filter(status='cancelled').count()
-
+    
     # Thống kê doanh thu
-    completed_orders = Order.objects.filter(status='completed')
-    total_revenue = sum((order.final_total for order in completed_orders), Decimal('0'))
-
+    total_revenue = Order.objects.filter(
+        status__in=['delivered', 'shipped']
+    ).aggregate(
+        total=Sum('total_amount')
+    )['total'] or 0
+    
     # Thống kê trong 30 ngày qua
     thirty_days_ago = timezone.now() - timedelta(days=30)
     recent_orders = Order.objects.filter(created_at__gte=thirty_days_ago).count()
-    recent_completed_orders = Order.objects.filter(
+    recent_revenue = Order.objects.filter(
         created_at__gte=thirty_days_ago,
-        status='completed'
-    )
-    recent_revenue = sum((order.final_total for order in recent_completed_orders), Decimal('0'))
-
+        status__in=['delivered', 'shipped']
+    ).aggregate(
+        total=Sum('total_amount')
+    )['total'] or 0
+    
     # Top 5 sách bán chạy
     top_snacks = OrderItem.objects.values('snack__title', 'snack__author').annotate(
         total_sold=Sum('quantity')
     ).order_by('-total_sold')[:5]
-
+    
     # Đơn hàng gần đây (5 đơn mới nhất)
     recent_orders_list = Order.objects.select_related('user').order_by('-created_at')[:5]
-
+    
     # Thống kê theo danh mục
     categories_stats = Category.objects.annotate(
         snack_count=Count('snacks'),
         sold_count=Sum('snacks__order_items__quantity')
     ).order_by('-snack_count')[:5]
-
+    
     context = {
         # Thống kê tổng quan
         'total_snacks': total_snacks,
         'total_orders': total_orders,
         'total_users': total_users,
         'total_revenue': total_revenue,
-
+        
         # Thống kê sách
         'snacks_in_stock': snacks_in_stock,
         'snacks_out_of_stock': snacks_out_of_stock,
-
+        
         # Thống kê đơn hàng
         'orders_pending': orders_pending,
         'orders_processing': orders_processing,
         'orders_shipped': orders_shipped,
         'orders_delivered': orders_delivered,
         'orders_cancelled': orders_cancelled,
-
+        
         # Thống kê 30 ngày
         'recent_orders': recent_orders,
         'recent_revenue': recent_revenue,
-
+        
         # Chi tiết
         'top_snacks': top_snacks,
         'recent_orders_list': recent_orders_list,
         'categories_stats': categories_stats,
     }
-
+    
     return render(request, 'admin/dashboard.html', context)
+

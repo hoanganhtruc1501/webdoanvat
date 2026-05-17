@@ -1,0 +1,260 @@
+[
+{
+  "model": "snacks.category",
+  "pk": 1,
+  "fields": {
+    "name": "Chân gà",
+    "description": "Các loại chân gà phổ biến hiện nay.",
+    "slug": "chan-ga",
+    "created_at": "2026-04-24T17:44:41.858Z",
+    "updated_at": "2026-04-26T11:46:00.011Z",
+    "is_active": true
+  }
+},
+{
+  "model": "snacks.category",
+  "pk": 2,
+  "fields": {
+    "name": "Khô gà",
+    "description": "Các dòng khô gà bán chạy nhất",
+    "slug": "kho-ga",
+    "created_at": "2026-04-24T17:44:41.868Z",
+    "updated_at": "2026-04-26T11:50:38.412Z",
+    "is_active": true
+  }
+},
+{
+  "model": "snacks.category",
+  "pk": 3,
+  "fields": {
+    "name": "Nước uống",
+    "description": "Nước ép, nước dừa và đồ uống giải khát.",
+    "slug": "nuoc-uong",
+    "created_at": "2026-04-24T17:44:41.881Z",
+    "updated_at": "2026-04-24T17:44:41.881Z",
+    "is_active": true
+  }
+},
+{
+  "model": "snacks.category",
+  "pk": 4,
+  "fields": {
+    "name": "Bánh kẹo",
+    "description": "Các loại bánh kẹo bán chạy nhất.",
+    "slug": "Banh-keo",
+    "created_at": "2026-04-24T17:44:41.890Z",
+    "updated_at": "2026-04-26T11:48:39.924Z",
+    "is_active": true
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 1,
+  "fields": {
+    "title": "Chân gà bách thảo",
+    "author": "Heyyo",
+    "slug": "chan-gachan-bach-thao",
+    "description": "Chân gà bách thảo vị cay tê đặc trưng từ thảo mộc, kết hợp hài hòa với thịt gà tươi ngon, phù hợp với người yêu thích hương vị cay cay, thơm lừng.",
+    "price": "12000",
+    "discount": "10",
+    "stock": 127,
+    "image": "snacks/bachthao.jpg",
+    "category": 1
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 2,
+  "fields": {
+    "title": "Chân gà nhất tâm vị bí truyền",
+    "author": "Heyyo",
+    "slug": "chan-ga-cay",
+    "description": "Chân gà vị ớt xanh 80g được nghiên cứu và sản xuất theo công thức bí truyền. Trên dây chuyền công nghệ hiện đại luôn mang đến cho khách hàng vị thơm ngon của từng sản phẩm.",
+    "price": "20000",
+    "discount": "20",
+    "stock": 96,
+    "image": "snacks/changacay.jpg",
+    "category": 1
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 3,
+  "fields": {
+    "title": "Nước dừa Cocoxim",
+    "author": "Cocoxim",
+    "slug": "nuoc-dua-cocoxim",
+    "description": "Cocoxim là một thương hiệu nổi bật trong ngành nước giải khát, chuyên cung cấp các sản phẩm từ dừa thiên nhiên, mang đến hương vị tươi mới và bổ dưỡng. Thương hiệu này đặc biệt chú trọng vào việc sử dụng nguyên liệu dừa chất lượng cao từ Bến Tre, nổi tiếng với vị ngọt thanh và sự tinh khiết của nước dừa.",
+    "price": "18000",
+    "discount": "5",
+    "stock": 210,
+    "image": "snacks/cocoxim.jpg",
+    "category": 3
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 4,
+  "fields": {
+    "title": "Chân gà rút xương cung đình",
+    "author": "Heyyo",
+    "slug": "Chan-ga-cung-dinh",
+    "description": "Chân gà rút xương cung đình, với hương vị cay nhẹ, thơm mùi thảo quả và hoa quế hồi mang lại trải nghiệm khó quên cho người sử dụng.",
+    "price": "12000",
+    "discount": "10",
+    "stock": 324,
+    "image": "snacks/cungdinh.jpg",
+    "category": 1
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 5,
+  "fields": {
+    "title": "Khô gà lá chanh",
+    "author": "Pichi",
+    "slug": "kho-ga-la-chanh",
+    "description": "Khô gà xé cay vị truyền thống, cay nhẹ tê đầu lưỡi, đậm đà gia vị, chuẩn vị khô gà. Kết hợp hoàn hảo giữa thịt gà dai ngon và hương lá chanh tươi tự nhiên 100%, tạo nên vị thơm đặc trưng khó cưỡng.",
+    "price": "30000",
+    "discount": "5",
+    "stock": 142,
+    "image": "snacks/galachanh.jpg",
+    "category": 2
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 6,
+  "fields": {
+    "title": "Nước ép nho",
+    "author": "OKF",
+    "slug": "nuoc-ep-nho",
+    "description": "Nước Ép Trái Cây OKF Shine Muscat (500ml) được làm từ những quả nho xanh Shine Muscat cao cấp, mang đến hương vị ngọt dịu tự nhiên, thanh mát và giàu dưỡng chất.",
+    "price": "40000",
+    "discount": "5",
+    "stock": 410,
+    "image": "snacks/nuocepnho.jpg",
+    "category": 3
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 7,
+  "fields": {
+    "title": "Chân gà nhất tâm vị truyền thống",
+    "author": "Heyyo",
+    "slug": "Chan-ga-nhat-tam",
+    "description": "Chân gà nhất tâm vị ớt xanh được nghiên cứu và sản xuất theo công thức bí truyền. Trên dây chuyền công nghệ hiện đại luôn mang đến cho khách hàng vị thơm ngon của từng sản phẩm.",
+    "price": "12000",
+    "discount": "10",
+    "stock": 109,
+    "image": "snacks/nhattam.jpg",
+    "category": 1
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 8,
+  "fields": {
+    "title": "Khô gà 100g",
+    "author": "Pichi",
+    "slug": "kho-ga-100g",
+    "description": "Khô gà xé cay vị truyền thống, cay nhẹ tê đầu lưỡi, đậm đà gia vị, chuẩn vị khô gà. Kết hợp hoàn hảo giữa thịt gà dai ngon và hương lá chanh tươi tự nhiên 100%, tạo nên vị thơm đặc trưng khó cưỡng.",
+    "price": "49000",
+    "discount": "5",
+    "stock": 118,
+    "image": "snacks/ga100g.jpg",
+    "category": 2
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 9,
+  "fields": {
+    "title": "Snack Cà Chua",
+    "author": "Oishi",
+    "slug": "snack-ca-chua",
+    "description": "Snack giòn ngon, thơm thơm vị cà chua kích thích vị giác vô cùng. Snack cà chua Oishi Tomato hấp dẫn, phù hợp vừa xem phim, vừa nghe nhạc vừa nhâm nhi thưởng thức. Snack Oishi tiện lợi, nhỏ gọn, dễ mang theo cho các buổi hoạt động ngoài trời.",
+    "price": "10000",
+    "discount": "1",
+    "stock": 9548,
+    "image": "snacks/snackcachua_mhXyBhr.jpg",
+    "category": 4
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 10,
+  "fields": {
+    "title": "Snack pho mát",
+    "author": "Oishi",
+    "slug": "snack-pho-mat",
+    "description": "Snack giòn ngon, thơm thơm vị phô mát kích thích vị giác vô cùng. Snack pho mát miếng Oishi gói 32g hấp dẫn, phù hợp vừa xem phim, vừa nghe nhạc vừa nhâm nhi thưởng thức. Snack Oishi tiện lợi, nhỏ gọn, dễ mang theo cho các buổi hoạt động ngoài trời.",
+    "price": "15000",
+    "discount": "5",
+    "stock": 276,
+    "image": "snacks/snackphomat_p7sbrb7.jpg",
+    "category": 4
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 11,
+  "fields": {
+    "title": "Snack chay",
+    "author": "Oishi",
+    "slug": "snack-chay",
+    "description": "Snack chay giòn ngon, thơm thơm vị da heo quay kích thích vị giác vô cùng. Snack chay vị da heo quay Oishi marty's gói 32g hấp dẫn, phù hợp vừa xem phim, vừa nghe nhạc vừa nhâm nhi thưởng thức. Snack Oishi tiện lợi, nhỏ gọn, dễ mang theo cho các buổi hoạt động ngoài",
+    "price": "15000",
+    "discount": "5",
+    "stock": 284,
+    "image": "snacks/snackchay_5bFBSPZ.jpg",
+    "category": 4
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 12,
+  "fields": {
+    "title": "Bánh Tráng Phô Mai Trưng Muối",
+    "author": "Đồ ăn vặt snack",
+    "slug": "banh-trang-pho-mai-trng-mui",
+    "description": "Bánh tráng phơi sương\r\nShop bán đúng mô tả sản phẩm đúng số gram/ số món thế hiện rõ trên ảnh khi bấm nút thêm giỏ hàng .\r\nSản phẩm có nhiều Size từ nhỏ đến lớn. Để QK có thể mua trải nghiệm từ 1-10 người ăn ạ.\r\nOK vui lòng đọc HDSD Và Cách Bảo Quản Sản phẩm trước khi dùng ạ.",
+    "price": "50000",
+    "discount": "10",
+    "stock": 50,
+    "image": "",
+    "category": null
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 13,
+  "fields": {
+    "title": "Nui Chiên Giòn Mắm Tỏi",
+    "author": "Đồ ăn vặt snack",
+    "slug": "nui-chien-gion-mm-ti",
+    "description": "Nui chiến giòn tan, phủ sốt mắm tỏi thươm nức mũi! Vị mặt ngọt hài hòa, cya nhẹ kích thích vị giác. Ăn vặt siêu cuốn - vừa giòn vừa đậm đà, nhâm nhi\r\nkhông dừng được.\r\nGiòn rụm - không hôi dầu Sốt mắm tỏi nhà làm chuẩn vị\r\nĂn chơi, nhậu lai rai, xem phim đều \"hợp mood\"\r\nBảo đảm ăn là ghiền, thích hợp làm quà biếu hay đãi bạn\r\nbe!",
+    "price": "50000",
+    "discount": "5",
+    "stock": 2000,
+    "image": "snacks/nui_chien_gion.jpg",
+    "category": null
+  }
+},
+{
+  "model": "snacks.snack",
+  "pk": 14,
+  "fields": {
+    "title": "Khô Heo Cháy Tỏi",
+    "author": "Đồ ăn vặt snack",
+    "slug": "kho-heo-chay-ti",
+    "description": "THÔNG TIN SẢN PHẨM:\r\n- Xuất xứ: Hà Nội\r\n- Đóng gói: Hộp 250g\r\n- HSD: 6 tháng\r\n- Cách bảo quản: Bảo quản ở nơi khô mát, tránh ánh nắng trực tiếp, đậy kín miệng hộp khi chưa dùng hết.\r\nQUY TRÌNH SẢN XUẤT\r\n1. Sản phẩm được chế biến từ thịt heo tươi ngon, ướp đều gia vị truyền thống và cháy lửa cho đến khi thơm lừng. Khô heo cháy tỏi có hương vị đậm đà, cay cay nồng nồng và thơm phức của tỏi, giúp kích thích vị giác của bạn. Sản phấm được đóng gói đẹp và sạch sẽ, đảm bảo vệ sinh an toàn thực phẩm.\r\n2. Giá thành : Do trực tiếp chọn lựa từ những nguyên liệu chất lượng và đảm bảo an toàn nên giá thành mỗi sản phẩm của chúng tôi là tốt nhất. Đây là một lựa chọn vô cùng yên tâm khi khách lựa chọn sản phẩm chúng tôi để sử dụng hoặc làm quà tặng cho người thân và bạn bè",
+    "price": "100000",
+    "discount": "5",
+    "stock": 2000,
+    "image": "snacks/kho_heo_chay_toi.jpg",
+    "category": null
+  }
+}
+]

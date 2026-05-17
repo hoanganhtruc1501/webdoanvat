@@ -1,7 +1,5 @@
 from django.db import models
-from django.db.models import Avg
 from django.utils.text import slugify
-from django.conf import settings
 
 
 class Category(models.Model):
@@ -69,67 +67,3 @@ class Snack(models.Model):
             discount_amount = (self.price * self.discount) / 100
             return self.price - discount_amount
         return self.price
-
-    @property
-    def average_rating(self):
-        rating = self.reviews.filter(is_active=True).aggregate(avg=Avg("rating"))["avg"]
-        return round(rating, 1) if rating else 0
-
-    @property
-    def review_count(self):
-        return self.reviews.filter(is_active=True).count()
-
-
-class Review(models.Model):
-    RATING_CHOICES = [(value, f"{value} sao") for value in range(1, 6)]
-
-    snack = models.ForeignKey(
-        Snack,
-        on_delete=models.CASCADE,
-        related_name="reviews",
-        verbose_name="San pham",
-    )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="snack_reviews",
-        verbose_name="Nguoi dung",
-    )
-    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, verbose_name="So sao")
-    comment = models.TextField(verbose_name="Noi dung danh gia")
-    is_active = models.BooleanField(default=True, verbose_name="Hien thi")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Ngay tao")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Ngay cap nhat")
-
-    class Meta:
-        verbose_name = "Danh gia san pham"
-        verbose_name_plural = "Danh gia san pham"
-        ordering = ["-created_at"]
-        constraints = [
-            models.UniqueConstraint(fields=["snack", "user"], name="unique_review_per_user_snack")
-        ]
-
-        
-
-    def __str__(self):
-        return f"{self.snack.title} - {self.user.username} ({self.rating} sao)"
-
-class HomeComment(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="home_comments",
-        verbose_name="Người dùng",
-    )
-    comment = models.TextField(verbose_name="Nội dung comment")
-    is_active = models.BooleanField(default=True, verbose_name="Hiển thị")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Ngày tạo")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Ngày cập nhật")
-
-    class Meta:
-        verbose_name = "Comment trang chủ"
-        verbose_name_plural = "Comment trang chủ"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return f"{self.user.username} - {self.created_at:%d/%m/%Y %H:%M}"

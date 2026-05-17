@@ -123,12 +123,6 @@
         <span>Tạm tính:</span>
         <strong>{{ order.total_amount|floatformat:0 }}đ</strong>
       </div>
-      {% if order.discount_amount > 0 %}
-      <div class="payment-row">
-        <span>Giảm giá{% if order.promotion_code %} ({{ order.promotion_code }}){% endif %}:</span>
-        <strong>-{{ order.discount_amount|floatformat:0 }}đ</strong>
-      </div>
-      {% endif %}
       <div class="payment-row">
         <span>Phí vận chuyển:</span>
         {% if order.shipping_fee > 0 %}

@@ -3,34 +3,17 @@ from decimal import Decimal
 from django.apps import apps
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import F, Sum
+from django.db.models import Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from .forms import CheckoutForm
-from .models import Order, OrderItem, Promotion
+from .models import Order, OrderItem
 
 
 def get_cart(request):
     return request.session.get("cart", {})
-
-
-def get_valid_promotion(code, total_amount):
-    code = (code or "").strip().upper()
-    if not code:
-        return None, Decimal("0"), ""
-
-    try:
-        promotion = Promotion.objects.get(code__iexact=code)
-    except Promotion.DoesNotExist:
-        return None, Decimal("0"), "Ma giam gia khong ton tai."
-
-    is_valid, message = promotion.validate_for_order(total_amount)
-    if not is_valid:
-        return None, Decimal("0"), message
-
-    return promotion, promotion.calculate_discount(total_amount), ""
 
 
 def order_list_view(request):
@@ -98,51 +81,17 @@ def checkout_view(request):
         total_quantity += quantity
 
     shipping_fee = Decimal("0") if total_amount >= Decimal("200000") else Decimal("30000")
-    promotion_code = request.session.get("promotion_code", "")
-
-    if request.method == "POST" and "remove_promotion" in request.POST:
-        request.session.pop("promotion_code", None)
-        messages.success(request, "Da xoa ma giam gia.")
-        return redirect("orders:checkout")
-
-    if request.method == "POST" and "apply_promotion" in request.POST:
-        submitted_code = request.POST.get("promotion_code", "")
-        promotion, discount_amount, promotion_error = get_valid_promotion(submitted_code, total_amount)
-        if promotion_error:
-            request.session.pop("promotion_code", None)
-            messages.error(request, promotion_error)
-        else:
-            request.session["promotion_code"] = promotion.code
-            messages.success(request, f"Da ap dung ma giam gia {promotion.code}.")
-        request.session.modified = True
-        return redirect("orders:checkout")
-
-    if request.method == "POST":
-        promotion_code = request.POST.get("promotion_code", promotion_code).strip().upper()
-
-    promotion, discount_amount, promotion_error = get_valid_promotion(promotion_code, total_amount)
-    if promotion_error and promotion_code == request.session.get("promotion_code", ""):
-        request.session.pop("promotion_code", None)
-        request.session.modified = True
-        promotion_code = ""
-        promotion_error = ""
-
-    final_total = total_amount - discount_amount + shipping_fee
+    final_total = total_amount + shipping_fee
 
     if request.method == "POST":
         form = CheckoutForm(request.POST, user=request.user)
-        if promotion_error:
-            form.add_error(None, promotion_error)
-        if not promotion_error and form.is_valid():
+        if form.is_valid():
             with transaction.atomic():
                 order = form.save(commit=False)
                 if request.user.is_authenticated:
                     order.user = request.user
                 order.total_amount = total_amount
                 order.shipping_fee = shipping_fee
-                order.promotion = promotion
-                order.promotion_code = promotion.code if promotion else ""
-                order.discount_amount = discount_amount
                 order.save()
 
                 for item in cart_items:
@@ -160,11 +109,7 @@ def checkout_view(request):
                         snack.stock -= item["quantity"]
                         snack.save()
 
-                if promotion:
-                    Promotion.objects.filter(pk=promotion.pk).update(used_count=F("used_count") + 1)
-
                 request.session["cart"] = {}
-                request.session.pop("promotion_code", None)
                 request.session["last_order_id"] = order.id
                 request.session.modified = True
 
@@ -181,9 +126,6 @@ def checkout_view(request):
             "cart_items": cart_items,
             "total_amount": total_amount,
             "shipping_fee": shipping_fee,
-            "promotion": promotion,
-            "promotion_code": promotion_code,
-            "discount_amount": discount_amount,
             "final_total": final_total,
             "total_quantity": total_quantity,
         },

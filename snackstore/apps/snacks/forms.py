@@ -2,8 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import Review
-
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -21,34 +19,4 @@ class CustomUserCreationForm(UserCreationForm):
         user.last_name = self.cleaned_data["last_name"]
         if commit:
             user.save()
-        return user
-
-
-class ReviewForm(forms.ModelForm):
-    class Meta:
-        model = Review
-        fields = ("rating", "comment")
-        widgets = {
-            "rating": forms.Select(attrs={"class": "review-control"}),
-            "comment": forms.Textarea(
-                attrs={
-                    "class": "review-control",
-                    "rows": 4,
-                    "placeholder": "Nhap cam nhan cua ban ve san pham",
-                }
-            ),
-        }
-
-class HomeCommentForm(forms.ModelForm):
-    class Meta:
-        model = HomeComment
-        fields = ("comment",)
-        widgets = {
-            "comment": forms.Textarea(
-                attrs={
-                    "class": "home-comment-control",
-                    "rows": 5,
-                    "placeholder": "Chia sẻ trải nghiệm của bạn tại Snackstore",
-                }
-            ),
-        }
+        return user 

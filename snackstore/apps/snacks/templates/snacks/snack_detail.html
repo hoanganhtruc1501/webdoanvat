@@ -148,88 +148,6 @@ Snackstore{% endblock %} {% block content %}
   .related-snacks-slider.slick-initialized .snack-grid {
     display: block !important;
   }
-
-  .reviews-panel {
-    margin: 28px 0 34px;
-    padding: 24px;
-    border: 1px solid #edf0f5;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 8px 26px rgba(15, 23, 42, 0.08);
-  }
-
-  .reviews-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 18px;
-  }
-
-  .reviews-header-row h2 {
-    margin: 0;
-    color: #111827;
-    font-size: 22px;
-    font-weight: 800;
-  }
-
-  .rating-summary {
-    color: #f59e0b;
-    font-weight: 800;
-  }
-
-  .review-form {
-    display: grid;
-    gap: 12px;
-    margin-bottom: 22px;
-    padding: 18px;
-    border-radius: 8px;
-    background: #f8fafc;
-  }
-
-  .review-control {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d9dee8;
-    border-radius: 6px;
-    font-size: 14px;
-  }
-
-  .review-submit {
-    width: fit-content;
-    padding: 10px 18px;
-    border: 0;
-    border-radius: 7px;
-    color: #fff;
-    background: #dc2626;
-    font-weight: 800;
-    cursor: pointer;
-  }
-
-  .review-login-note,
-  .empty-reviews {
-    color: #64748b;
-    font-size: 14px;
-  }
-
-  .review-item {
-    padding: 16px 0;
-    border-top: 1px solid #eef2f7;
-  }
-
-  .review-item strong {
-    color: #111827;
-  }
-
-  .review-stars {
-    color: #f59e0b;
-    font-weight: 800;
-  }
-
-  .review-date {
-    color: #64748b;
-    font-size: 12px;
-  }
 </style>
 <div class="container detail-page">
   <div style="width: 100%">
@@ -356,47 +274,6 @@ Snackstore{% endblock %} {% block content %}
         <div class="snack-description">{{ snack.description|linebreaks }}</div>
       </div>
     </div>
-
-    <section class="reviews-panel">
-      <div class="reviews-header-row">
-        <h2>Danh gia san pham</h2>
-        <div class="rating-summary">
-          {{ snack.average_rating|floatformat:1 }}/5 - {{ snack.review_count }} danh gia
-        </div>
-      </div>
-
-      {% if user.is_authenticated %}
-      <form method="post" class="review-form">
-        {% csrf_token %}
-        <label for="{{ review_form.rating.id_for_label }}">So sao</label>
-        {{ review_form.rating }} {{ review_form.rating.errors }}
-        <label for="{{ review_form.comment.id_for_label }}">Noi dung danh gia</label>
-        {{ review_form.comment }} {{ review_form.comment.errors }}
-        <button type="submit" class="review-submit">
-          {% if user_review %}Cap nhat danh gia{% else %}Gui danh gia{% endif %}
-        </button>
-      </form>
-      {% else %}
-      <p class="review-login-note">
-        Vui long <a href="{% url 'snacks:login' %}?next={{ request.path }}">dang nhap</a> de danh gia san pham.
-      </p>
-      {% endif %}
-
-      <div class="review-list">
-        {% for review in reviews %}
-        <article class="review-item">
-          <div>
-            <strong>{{ review.user.get_full_name|default:review.user.username }}</strong>
-            <span class="review-stars">{{ review.rating }}/5 sao</span>
-          </div>
-          <p>{{ review.comment|linebreaksbr }}</p>
-          <span class="review-date">{{ review.created_at|date:"d/m/Y H:i" }}</span>
-        </article>
-        {% empty %}
-        <p class="empty-reviews">Chua co danh gia nao cho san pham nay.</p>
-        {% endfor %}
-      </div>
-    </section>
 
     <!-- Sản phẩm cùng thể loại -->
     <h2>Sản phẩm cùng thể loại</h2>

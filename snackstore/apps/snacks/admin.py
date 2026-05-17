@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Review, Snack
+from .models import Category, Snack
 
 
 @admin.register(Category)
@@ -17,16 +17,3 @@ class SnackAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title", "author")
     list_filter = ("category",)
-
-
-@admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("snack", "user", "rating", "is_active", "created_at")
-    list_filter = ("rating", "is_active", "created_at")
-    search_fields = ("snack__title", "user__username", "comment")
-
-@admin.register(HomeComment)
-class HomeCommentAdmin(admin.ModelAdmin):
-    list_display = ("user", "is_active", "created_at")
-    list_filter = ("is_active", "created_at")
-    search_fields = ("user__username", "user__first_name", "user__last_name", "comment")

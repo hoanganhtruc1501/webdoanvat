@@ -23,11 +23,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     # Admin routes
     path('admin/', admin.site.urls),
-
+    
     # More specific routes first
     path('cart/', include('carts.urls')),      # Giỏ hàng
     path('orders/', include('orders.urls')),   # Đơn hàng, thanh toán
-
+    
     # General routes last
     path('', include('snacks.urls')),          # Trang chủ, about, contact (includes slug pattern)
 ]
