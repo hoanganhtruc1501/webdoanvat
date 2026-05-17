@@ -115,6 +115,7 @@ def snack_list_view(request):
         'page_obj': page_obj,
         'categories': categories,
         'selected_category': selected_category,
+        'home_comment_form': home_comment_form,
         'total_snacks': total_snacks,
         'filtered_snacks_count': filtered_snacks_count,
         'start_index': start_index,
