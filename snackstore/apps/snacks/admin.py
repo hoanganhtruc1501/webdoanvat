@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Snack
+from .models import Category, Snack, Review, HomeComment
 
 
 @admin.register(Category)
