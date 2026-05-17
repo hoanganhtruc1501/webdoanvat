@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -7,7 +8,7 @@ from django.contrib import messages
 from django.db.models import Q, Sum, Count
 from django.core.paginator import Paginator
 from .models import Category, Snack
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, ReviewForm
 from orders.models import Order, OrderItem
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -69,13 +70,35 @@ def snack_list_view(request):
         'end_index': end_index,
         'filter_params': filter_params,
         'has_filters': bool(query or min_price or max_price or category_slug),
-        'page_title': f'Sách - {selected_category.name}' if selected_category else 'Danh Sách Sách',
+        'page_title': f'Sản phẩm - {selected_category.name}' if selected_category else 'Danh sách sản phẩm',
     }
     return render(request, 'snacks/snack_list.html', context)
 
 
 def snack_detail_view(request, slug):
     snack = get_object_or_404(Snack, slug=slug)
+    reviews = snack.reviews.filter(is_active=True).select_related('user')
+    user_review = None
+
+    if request.user.is_authenticated:
+        user_review = snack.reviews.filter(user=request.user).first()
+
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.warning(request, "Bạn cần đăng nhập để đánh giá sản phẩm.")
+            return redirect(f"/login/?next={request.path}")
+
+        review_form = ReviewForm(request.POST, instance=user_review)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.snack = snack
+            review.user = request.user
+            review.is_active = True
+            review.save()
+            messages.success(request, "Cảm ơn bạn đã gửi đánh giá sản phẩm.")
+            return redirect('snacks:detail', slug=snack.slug)
+    else:
+        review_form = ReviewForm(instance=user_review)
     
     # Lấy các sản phẩm cùng category (trừ sản phẩm hiện tại)
     related_snacks = []
@@ -87,6 +110,9 @@ def snack_detail_view(request, slug):
     context = {
         'snack': snack,
         'related_snacks': related_snacks,
+        'reviews': reviews,
+        'review_form': review_form,
+        'user_review': user_review,
         'page_title': snack.title,
     }
     return render(request, 'snacks/snack_detail.html', context)
@@ -135,26 +161,22 @@ def admin_dashboard_view(request):
     # Thống kê đơn hàng theo trạng thái
     orders_pending = Order.objects.filter(status='pending').count()
     orders_processing = Order.objects.filter(status='processing').count()
-    orders_shipped = Order.objects.filter(status='shipped').count()
-    orders_delivered = Order.objects.filter(status='delivered').count()
+    orders_shipped = Order.objects.filter(status='shipping').count()
+    orders_delivered = Order.objects.filter(status='completed').count()
     orders_cancelled = Order.objects.filter(status='cancelled').count()
     
     # Thống kê doanh thu
-    total_revenue = Order.objects.filter(
-        status__in=['delivered', 'shipped']
-    ).aggregate(
-        total=Sum('total_amount')
-    )['total'] or 0
+    completed_orders = Order.objects.filter(status='completed')
+    total_revenue = sum((order.final_total for order in completed_orders), Decimal('0'))
     
     # Thống kê trong 30 ngày qua
     thirty_days_ago = timezone.now() - timedelta(days=30)
     recent_orders = Order.objects.filter(created_at__gte=thirty_days_ago).count()
-    recent_revenue = Order.objects.filter(
+    recent_completed_orders = Order.objects.filter(
         created_at__gte=thirty_days_ago,
-        status__in=['delivered', 'shipped']
-    ).aggregate(
-        total=Sum('total_amount')
-    )['total'] or 0
+        status='completed'
+    )
+    recent_revenue = sum((order.final_total for order in recent_completed_orders), Decimal('0'))
     
     # Top 5 sách bán chạy
     top_snacks = OrderItem.objects.values('snack__title', 'snack__author').annotate(
