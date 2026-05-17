@@ -2,7 +2,7 @@
 .footer {
   background-color: #f3f6fa;
   padding: 60px 0 20px 0;
-  font-family: "Arial", sans-serif;
+  font-family: "Noto Sans", Arial, sans-serif;
   margin-top: 80px;
 }
 
@@ -318,4 +318,6 @@
   .payment-logo {
     height: 22px;
   }
+}
+
 }
