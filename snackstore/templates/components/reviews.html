@@ -310,8 +310,8 @@
 
   <div class="reviews-inner">
     <div class="reviews-header">
-      <span class="reviews-eyebrow">Comment cong dong</span>
-      <h2 id="reviews-title">Y kien khach hang tren trang chu</h2>
+      <span class="reviews-eyebrow">Comment cộng đồng</span>
+      <h2 id="reviews-title">Ý kiến khách hàng trên trang chủ </h2>
       <p>
         Cac comment mau da duoc bo. Ben duoi chi con comment that do nguoi dung gui
         va moi nguoi co the tu sua hoac xoa comment cua minh.
@@ -322,12 +322,12 @@
       <div class="comment-compose" id="home-comment-form">
         {% if editing_comment %}
         <span class="compose-tag">Dang sua</span>
-        <h3>Chinh sua comment cua ban</h3>
-        <p>Cap nhat noi dung roi bam luu de thay doi comment hien tai.</p>
+        <h3>Chỉnh sửa comment</h3>
+        <p>Cập nhật nội dung rồi bấm lưu để thay đổi comment hiện tại.</p>
         {% else %}
-        <span class="compose-tag">Comment moi</span>
-        <h3>De lai y kien tren trang chu</h3>
-        <p>Chia se trai nghiem cua ban de khach hang khac co them tham khao.</p>
+        <span class="compose-tag">Comment mới </span>
+        <h3>Để lại ý kiến trên trang  chủ</h3>
+        <p>Chia sẻ trải nghiệm của bạn để khách hàng có thể tham khảo.</p>
         {% endif %}
 
         {% if user.is_authenticated %}
@@ -347,7 +347,7 @@
 
           <div class="form-actions">
             <button type="submit" class="home-comment-submit">
-              {% if editing_comment %}Cap nhat comment{% else %}Gui comment{% endif %}
+              {% if editing_comment %}Cập nhật comment{% else %}Gửi comment{% endif %}
             </button>
             {% if editing_comment %}
             <a href="{% url 'snacks:list' %}#home-comment-form" class="comment-cancel-link">
@@ -358,11 +358,11 @@
         </form>
         {% else %}
         <p class="home-comment-login-note">
-          Vui long
+          Vui lòng
           <a href="{% url 'snacks:login' %}?next={{ request.get_full_path|urlencode }}">
-            dang nhap
+            đăng nhập
           </a>
-          de gui comment.
+          để gửi comment.
         </p>
         {% endif %}
       </div>
@@ -377,7 +377,7 @@
               <h4>{{ home_comment.user.get_full_name|default:home_comment.user.username }}</h4>
               <div class="comment-date">{{ home_comment.created_at|date:"d/m/Y H:i" }}</div>
             </div>
-            <span class="comment-badge">Community</span>
+            <span class="comment-badge">Cộng đồng</span>
           </div>
 
           <p class="comment-body">{{ home_comment.comment|linebreaksbr }}</p>
@@ -385,7 +385,7 @@
           {% if user.is_authenticated and user.id == home_comment.user_id %}
           <div class="comment-tools">
             <a href="?edit_comment={{ home_comment.id }}#home-comment-form" class="comment-edit-link">
-              Chinh sua
+              Chỉnh sửa
             </a>
             <form
               method="post"
@@ -395,15 +395,15 @@
               {% csrf_token %}
               <input type="hidden" name="action" value="delete" />
               <input type="hidden" name="comment_id" value="{{ home_comment.id }}" />
-              <button type="submit" class="comment-delete-btn">Xoa</button>
+              <button type="submit" class="comment-delete-btn">Xóa</button>
             </form>
-            <span class="comment-owner-note">Comment cua ban</span>
+            <span class="comment-owner-note">Comment của bạn</span>
           </div>
           {% endif %}
         </article>
         {% empty %}
         <div class="comment-empty">
-          Chua co comment nao. Hay la nguoi dau tien chia se trai nghiem cua ban.
+          Chưa có comment nào. Hãy là người đầu tiên chia sẻ trải nghiệm.
         </div>
         {% endfor %}
       </div>
