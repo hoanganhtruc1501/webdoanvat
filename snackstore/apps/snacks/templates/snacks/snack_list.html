@@ -4,7 +4,7 @@
 {% block title %}Snackstore{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/snack_list.css' %}?v=2" />
+<link rel="stylesheet" href="{% static 'css/snack_list.css' %}?v=target-banner-2026" />
 {% endblock %}
 
 {% block content %}
@@ -34,7 +34,7 @@
   <section class="catalog-layout" aria-label="Danh sách sản phẩm">
     {% include 'components/categories.html' %}
 
-    <div class="catalog-results">
+    <div class="catalog-results" id="products">
       {% if selected_category %}
       <div class="catalog-heading">
         <h1>{{ selected_category.name }}</h1>
