@@ -7,8 +7,9 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.db.models import Q, Sum, Count
 from django.core.paginator import Paginator
-from .models import Category, Snack
-from .forms import CustomUserCreationForm, ReviewForm
+from django.urls import reverse
+from .models import Category, HomeComment, Snack
+from .forms import CustomUserCreationForm, HomeCommentForm, ReviewForm
 from orders.models import Order, OrderItem
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -19,10 +20,60 @@ def snack_list_view(request):
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
     category_slug = request.GET.get('category')
+    home_comment_form = HomeCommentForm()
+    editing_comment = None
+
+    if request.method == 'POST':
+        action = request.POST.get("action")
+        if action in {"create", "update", "delete"}:
+            if not request.user.is_authenticated:
+                return redirect(f"{reverse('snacks:login')}?next={request.path}")
+
+            if action == "delete":
+                home_comment = HomeComment.objects.filter(
+                    pk=request.POST.get("comment_id"),
+                    user=request.user,
+                ).first()
+                if home_comment:
+                    home_comment.delete()
+                    messages.success(request, "Comment đã được xoá.")
+                else:
+                    messages.error(request, "Bạn không có quyền xoá comment này.")
+                return redirect('snacks:list')
+
+            if action == "update":
+                editing_comment = HomeComment.objects.filter(
+                    pk=request.POST.get("comment_id"),
+                    user=request.user,
+                ).first()
+                if not editing_comment:
+                    messages.error(request, "Bạn không có quyền sửa comment này.")
+                    return redirect('snacks:list')
+                home_comment_form = HomeCommentForm(request.POST, instance=editing_comment)
+            else:
+                home_comment_form = HomeCommentForm(request.POST)
+
+            if home_comment_form.is_valid():
+                home_comment = home_comment_form.save(commit=False)
+                home_comment.user = request.user
+                home_comment.is_active = True
+                home_comment.save()
+                messages.success(request, "Comment đã được lưu.")
+                return redirect('snacks:list')
+    else:
+        edit_comment_id = request.GET.get("edit_comment")
+        if request.user.is_authenticated and edit_comment_id:
+            editing_comment = HomeComment.objects.filter(
+                pk=edit_comment_id,
+                user=request.user,
+            ).first()
+            if editing_comment:
+                home_comment_form = HomeCommentForm(instance=editing_comment)
 
     snacks = Snack.objects.all()
     categories = Category.objects.filter(is_active=True)
     selected_category = None
+    home_comments = HomeComment.objects.filter(is_active=True).select_related("user")
 
     # Lưu total_snacks trước khi filter để hiển thị thông tin
     total_snacks = snacks.count()
@@ -219,6 +270,8 @@ def admin_dashboard_view(request):
         'recent_orders_list': recent_orders_list,
         'categories_stats': categories_stats,
     }
+    
+    return render(request, 'admin/dashboard.html', context)
     
     return render(request, 'admin/dashboard.html', context)
 
