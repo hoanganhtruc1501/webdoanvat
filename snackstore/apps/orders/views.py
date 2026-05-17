@@ -237,7 +237,7 @@ def order_cancel_view(request, order_id):
         order.save(update_fields=["status", "updated_at"])
         
     messages.success(request, f"Đã huỷ đơn hàng #{order.id}.")
-    return redirect("orders:detail", order_id=order.
+    return redirect("orders:detail", order_id=order.id)
 
 
 
