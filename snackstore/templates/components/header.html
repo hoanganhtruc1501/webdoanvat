@@ -1,33 +1,30 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/header.css' %}?v=4" />
 <header class="header">
   <div class="header-container">
-    <!-- Logo Section -->
-    <a href="{% url 'snacks:list' %}" class="logo">
-      <div class="logo-icon"></div>
+    <a href="{% url 'snacks:list' %}" class="logo" aria-label="Về trang chủ Snackstore">
+      <span class="logo-icon" aria-hidden="true"></span>
       <span class="logo-text">SNACK</span>
     </a>
 
-    <!-- Navigation Menu -->
-    <!-- <nav>
-                    <ul class="nav-menu">
-                        <li><a href="{% url 'snacks:list' %}" class="{% if request.resolver_match.url_name == 'list' %}active{% endif %}">Trang chủ</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Liên hệ</a></li>
-                    </ul>
-                </nav> -->
+    <nav class="nav-menu" aria-label="Điều hướng chính">
+      <a href="{% url 'snacks:list' %}" class="nav-link{% if request.resolver_match.url_name == 'list' %} active{% endif %}">
+        Trang chủ
+      </a>
+      <a href="{% url 'snacks:list' %}#products" class="nav-link">Sản phẩm</a>
+      <a href="{% url 'cart:detail' %}" class="nav-link">Giỏ hàng</a>
+      {% if user.is_authenticated %}
+      <a href="{% url 'orders:list' %}" class="nav-link">Đơn mua</a>
+      {% endif %}
+    </nav>
 
-    <!-- Header Right Section -->
     <div class="header-right">
-      <!-- User Authentication -->
       <div class="user-auth">
         {% if user.is_authenticated %}
         <div class="user-dropdown">
-          <span class="user-greeting" onclick="toggleDropdown()">
-            Xin chào,
-            <strong>{{ user.first_name|default:user.username }}!</strong>
-            <i class="fas fa-chevron-down dropdown-arrow"></i>
-          </span>
+          <button type="button" class="user-greeting" onclick="toggleDropdown()" aria-expanded="false">
+            <span>Xin chào,</span>
+            <strong>{{ user.first_name|default:user.username }}</strong>
+            <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
+          </button>
           <div class="dropdown-menu" id="userDropdown">
             {% if user.is_staff %}
             <a href="{% url 'snacks:admin_dashboard' %}" class="dropdown-item">
@@ -38,7 +35,7 @@
             </a>
             {% endif %}
             <a href="{% url 'orders:list'%}" class="dropdown-item">
-              <i class="fas fa-shopping-cart"></i> Đơn mua
+              <i class="fas fa-receipt"></i> Đơn mua
             </a>
             <a href="{% url 'snacks:logout' %}" class="dropdown-item">
               <i class="fas fa-sign-out-alt"></i> Đăng xuất
@@ -55,10 +52,9 @@
         {% endif %}
       </div>
 
-      <!-- Shopping Cart Icon -->
-      <a href="{% url 'cart:detail' %}" class="icon-btn cart-link">
-        <i class="fa fa-shopping-bag"></i>
-        <span class="badge cart-count-badge">{{ cart_count|default:0 }}</span>
+      <a href="{% url 'cart:detail' %}" class="icon-btn cart-link" aria-label="Xem giỏ hàng">
+        <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+        <span class="cart-count-badge">{{ cart_count|default:0 }}</span>
       </a>
     </div>
   </div>
@@ -67,19 +63,16 @@
 <script>
   function toggleDropdown() {
     const dropdown = document.getElementById("userDropdown");
+    const button = document.querySelector(".user-greeting");
+    if (!dropdown || !button) return;
     dropdown.classList.toggle("show");
+    button.setAttribute("aria-expanded", dropdown.classList.contains("show"));
   }
 
-  // Close dropdown when clicking outside
-  window.onclick = function (event) {
-    if (
-      !event.target.matches(".user-greeting") &&
-      !event.target.matches(".dropdown-arrow")
-    ) {
-      const dropdown = document.getElementById("userDropdown");
-      if (dropdown.classList.contains("show")) {
-        dropdown.classList.remove("show");
-      }
-    }
-  };
+  window.addEventListener("click", function (event) {
+    const dropdown = document.getElementById("userDropdown");
+    if (!dropdown) return;
+    const clickedInside = event.target.closest(".user-dropdown");
+    if (!clickedInside) dropdown.classList.remove("show");
+  });
 </script>
