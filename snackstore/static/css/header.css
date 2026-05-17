@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: "Arial", sans-serif;
+  font-family: "Noto Sans", Arial, sans-serif;
 }
 ul li a {
   text-decoration: none;
@@ -444,4 +444,5 @@ nav {
     font-size: 13px;
     padding: 6px 10px;
   }
+}
 }
