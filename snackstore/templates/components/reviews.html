@@ -169,6 +169,18 @@
       background: #fff;
     }
 
+    .home-comment-login-link {
+      color: #fff;
+      background: linear-gradient(135deg, #1677f2, #0f63d8);
+    }
+
+    .home-comment-login-note {
+      margin: 0;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
     .home-comment-login-note a {
       color: #0f63d8;
       font-weight: 700;
@@ -311,7 +323,7 @@
   <div class="reviews-inner">
     <div class="reviews-header">
       <span class="reviews-eyebrow">Comment cộng đồng</span>
-      <h2 id="reviews-title">Ý kiến khách hàng trên trang chủ </h2>
+      <h2 id="reviews-title">Ý kiến khách hàng trên trang chủ</h2>
     </div>
 
     <div class="community-comments">
@@ -321,12 +333,11 @@
         <h3>Chỉnh sửa comment</h3>
         <p>Cập nhật nội dung rồi bấm lưu để thay đổi comment hiện tại.</p>
         {% else %}
-        <span class="compose-tag">Comment mới </span>
-        <h3>Để lại ý kiến trên trang  chủ</h3>
+        <span class="compose-tag">Comment moi</span>
+        <h3>Để lại ý kiến trên trang chủ</h3>
         <p>Chia sẻ trải nghiệm của bạn để khách hàng có thể tham khảo.</p>
         {% endif %}
 
-        {% if user.is_authenticated %}
         <form method="post" class="home-comment-form">
           {% csrf_token %}
           {% if editing_comment %}
@@ -336,12 +347,31 @@
           <input type="hidden" name="action" value="create" />
           {% endif %}
 
-          <label class="comment-label" for="{{ home_comment_form.comment.id_for_label }}">
-            Noi dung comment
+          <label class="comment-label" for="home-comment-input">
+            Nội dung comment
           </label>
-          {{ home_comment_form.comment }} {{ home_comment_form.comment.errors }}
+          <textarea
+            id="home-comment-input"
+            name="comment"
+            class="home-comment-control"
+            rows="5"
+            placeholder="Chia se trai nghiem cua ban tai Snackstore"
+            style="
+              display: block;
+              width: 100%;
+              min-height: 132px;
+              padding: 14px 16px;
+              border: 2px solid #d7dce3;
+              border-radius: 16px;
+              background: #fff;
+              color: #111827;
+              resize: vertical;
+            "
+          >{{ home_comment_form.comment.value|default_if_none:'' }}</textarea>
+          {{ home_comment_form.comment.errors }}
 
           <div class="form-actions">
+            {% if user.is_authenticated %}
             <button type="submit" class="home-comment-submit">
               {% if editing_comment %}Cập nhật comment{% else %}Gửi comment{% endif %}
             </button>
@@ -350,15 +380,24 @@
               Huy
             </a>
             {% endif %}
+            {% else %}
+            <a
+              href="{% url 'snacks:login' %}?next={{ request.get_full_path|urlencode }}"
+              class="home-comment-submit home-comment-login-link"
+            >
+              Dang nhap de gui comment
+            </a>
+            {% endif %}
           </div>
         </form>
-        {% else %}
+
+        {% if not user.is_authenticated %}
         <p class="home-comment-login-note">
-          Vui lòng
+          Ban can
           <a href="{% url 'snacks:login' %}?next={{ request.get_full_path|urlencode }}">
-            đăng nhập
+            dang nhap
           </a>
-          để gửi comment.
+          truoc khi comment duoc luu.
         </p>
         {% endif %}
       </div>
@@ -391,7 +430,7 @@
               {% csrf_token %}
               <input type="hidden" name="action" value="delete" />
               <input type="hidden" name="comment_id" value="{{ home_comment.id }}" />
-              <button type="submit" class="comment-delete-btn">Xóa</button>
+              <button type="submit" class="comment-delete-btn">Xoa</button>
             </form>
             <span class="comment-owner-note">Comment của bạn</span>
           </div>
