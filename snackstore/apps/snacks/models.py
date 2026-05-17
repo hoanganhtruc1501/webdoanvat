@@ -113,7 +113,7 @@ class Review(models.Model):
         return f"{self.snack.title} - {self.user.username} ({self.rating} sao)"
 
 
-    class HomeComment(models.Model):
+class HomeComment(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
