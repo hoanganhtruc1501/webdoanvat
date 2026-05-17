@@ -329,11 +329,11 @@
     <div class="community-comments">
       <div class="comment-compose" id="home-comment-form">
         {% if editing_comment %}
-        <span class="compose-tag">Dang sua</span>
+        <span class="compose-tag">Đang sửa</span>
         <h3>Chỉnh sửa comment</h3>
         <p>Cập nhật nội dung rồi bấm lưu để thay đổi comment hiện tại.</p>
         {% else %}
-        <span class="compose-tag">Comment moi</span>
+        <span class="compose-tag">Comment mới</span>
         <h3>Để lại ý kiến trên trang chủ</h3>
         <p>Chia sẻ trải nghiệm của bạn để khách hàng có thể tham khảo.</p>
         {% endif %}
@@ -355,7 +355,7 @@
             name="comment"
             class="home-comment-control"
             rows="5"
-            placeholder="Chia se trai nghiem cua ban tai Snackstore"
+            placeholder="Chia sẻ trải nghiệm của bạn tại Snackstore"
             style="
               display: block;
               width: 100%;
@@ -385,7 +385,7 @@
               href="{% url 'snacks:login' %}?next={{ request.get_full_path|urlencode }}"
               class="home-comment-submit home-comment-login-link"
             >
-              Dang nhap de gui comment
+              Đăng nhập để gửi Comment
             </a>
             {% endif %}
           </div>
@@ -393,11 +393,11 @@
 
         {% if not user.is_authenticated %}
         <p class="home-comment-login-note">
-          Ban can
+          Bạn cần
           <a href="{% url 'snacks:login' %}?next={{ request.get_full_path|urlencode }}">
-            dang nhap
+            đăng nhập
           </a>
-          truoc khi comment duoc luu.
+          trước khi comment được lưu.
         </p>
         {% endif %}
       </div>
@@ -425,12 +425,12 @@
             <form
               method="post"
               class="comment-delete-form"
-              onsubmit="return confirm('Ban chac chan muon xoa comment nay?');"
+              onsubmit="return confirm('Bạn chắc chắn muốn xoá comment này?');"
             >
               {% csrf_token %}
               <input type="hidden" name="action" value="delete" />
               <input type="hidden" name="comment_id" value="{{ home_comment.id }}" />
-              <button type="submit" class="comment-delete-btn">Xoa</button>
+              <button type="submit" class="comment-delete-btn">Xoá</button>
             </form>
             <span class="comment-owner-note">Comment của bạn</span>
           </div>
