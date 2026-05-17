@@ -21,7 +21,7 @@
     }
 
     .reviews-header {
-      max-width: 680px;
+      max-width: 720px;
       margin: 0 auto 34px;
       text-align: center;
     }
@@ -57,126 +57,234 @@
       line-height: 1.7;
     }
 
-    .reviews-grid {
+    .community-comments {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
       gap: 22px;
-      align-items: stretch;
+      align-items: start;
     }
 
-    .review-card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      min-height: 330px;
-      padding: 28px;
-      overflow: hidden;
+    .comment-compose,
+    .comment-item,
+    .comment-empty {
       border-radius: 24px;
-      background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(226, 232, 240, 0.95);
+      background: rgba(255, 255, 255, 0.92);
       box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
-      transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
     }
 
-    .review-card::before {
-      content: "\201C";
-      position: absolute;
-      right: 22px;
-      top: 10px;
-      color: rgba(255, 122, 89, 0.12);
-      font-family: "Noto Sans", Arial, sans-serif;
-      font-size: 110px;
-      line-height: 1;
-      pointer-events: none;
+    .comment-compose {
+      position: sticky;
+      top: 18px;
+      padding: 26px;
     }
 
-    .review-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
-    }
-
-    .review-top {
-      position: relative;
-      display: flex;
+    .compose-tag {
+      display: inline-flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 22px;
-      z-index: 1;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(22, 119, 242, 0.1);
+      color: #0f63d8;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    .review-avatar {
-      width: 76px;
-      height: 76px;
-      flex: 0 0 76px;
-      border-radius: 22px;
-      object-fit: cover;
-      border: 4px solid #fff;
-      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
-    }
-
-    .review-name {
-      margin: 0;
+    .comment-compose h3 {
+      margin: 16px 0 10px;
       color: #111827;
-      font-size: 18px;
+      font-size: 24px;
       font-weight: 850;
       line-height: 1.2;
     }
 
-    .review-role {
-      margin: 5px 0 0;
+    .comment-compose p {
+      margin: 0 0 16px;
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    .home-comment-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .comment-label {
+      color: #334155;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .home-comment-control {
+      width: 100%;
+      min-height: 132px;
+      padding: 14px 16px;
+      border: 1px solid #d7dce3;
+      border-radius: 16px;
+      color: #111827;
+      font: inherit;
+      resize: vertical;
+      background: #fff;
+    }
+
+    .home-comment-control:focus {
+      outline: 2px solid rgba(22, 119, 242, 0.18);
+      border-color: #1677f2;
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .home-comment-submit,
+    .comment-cancel-link,
+    .comment-edit-link,
+    .comment-delete-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .home-comment-submit {
+      border: 0;
+      color: #fff;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .comment-cancel-link {
+      border: 1px solid #d7dce3;
+      color: #334155;
+      background: #fff;
+    }
+
+    .home-comment-login-note a {
+      color: #0f63d8;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .home-comment-form .errorlist {
+      margin: -4px 0 0;
+      padding-left: 18px;
+      color: #b91c1c;
+      font-size: 13px;
+    }
+
+    .comment-feed {
+      display: grid;
+      gap: 16px;
+    }
+
+    .comment-item {
+      padding: 22px 24px;
+    }
+
+    .comment-item.is-editing {
+      border-color: rgba(22, 119, 242, 0.34);
+      box-shadow: 0 18px 45px rgba(22, 119, 242, 0.12);
+    }
+
+    .comment-meta {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .comment-meta h4 {
+      margin: 0;
+      color: #111827;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .comment-date {
       color: #94a3b8;
       font-size: 13px;
       font-weight: 700;
     }
 
-    .review-stars {
-      display: flex;
-      gap: 3px;
-      margin-top: 9px;
-      color: #f59e0b;
-      font-size: 14px;
-      letter-spacing: 1px;
+    .comment-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 102px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(249, 115, 22, 0.14);
+      color: #c2410c;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
-    .review-text {
-      position: relative;
-      z-index: 1;
+    .comment-body {
       margin: 0;
       color: #334155;
-      font-size: 16px;
-      line-height: 1.75;
-      flex: 1;
+      font-size: 15px;
+      line-height: 1.8;
     }
 
-    .review-meta {
+    .comment-tools {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 24px;
-      padding-top: 18px;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 14px;
       border-top: 1px solid #eef2f7;
+    }
+
+    .comment-edit-link {
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
+
+    .comment-delete-form {
+      margin: 0;
+    }
+
+    .comment-delete-btn {
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      background: #fef2f2;
+    }
+
+    .comment-owner-note {
       color: #64748b;
       font-size: 13px;
       font-weight: 700;
     }
 
-    .verified-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: #15803d;
+    .comment-empty {
+      padding: 24px;
+      color: #64748b;
+      font-size: 15px;
+      line-height: 1.7;
     }
 
     @media (max-width: 980px) {
-      .reviews-grid {
+      .community-comments {
         grid-template-columns: 1fr;
       }
 
-      .review-card {
-        min-height: auto;
+      .comment-compose {
+        position: static;
       }
     }
 
@@ -187,96 +295,118 @@
         border-radius: 20px;
       }
 
-      .review-card {
+      .comment-compose,
+      .comment-item,
+      .comment-empty {
         padding: 22px;
       }
 
-      .review-top {
+      .comment-meta {
         align-items: flex-start;
+        flex-direction: column;
       }
     }
   </style>
 
   <div class="reviews-inner">
     <div class="reviews-header">
-      <span class="reviews-eyebrow">Khách hàng nói gì</span>
-      <h2 id="reviews-title">Đánh giá từ khách hàng</h2>
-      <p>Những phản hồi từ khách hàng sau khi mua sắm tại Snackstore.</p>
+      <span class="reviews-eyebrow">Comment cong dong</span>
+      <h2 id="reviews-title">Y kien khach hang tren trang chu</h2>
+      <p>
+        Cac comment mau da duoc bo. Ben duoi chi con comment that do nguoi dung gui
+        va moi nguoi co the tu sua hoac xoa comment cua minh.
+      </p>
     </div>
 
-    <div class="reviews-grid">
-      <article class="review-card">
-        <div class="review-top">
-          <img
-            class="review-avatar"
-            src="media/snacks/Huy.jpg"
-            alt="Nguyễn Quang Huy"
-          />
-          <div>
-            <h3 class="review-name">Nguyễn Quang Huy</h3>
-            <p class="review-role">Khách hàng thân thiết</p>
-          </div>
-        </div>
-        <p class="review-text">
-          "Mua hàng rất tiện lợi, giao diện dễ dùng và thuận tiện. Sản phẩm đa
-          dạng, đóng gói cẩn thận, chất lượng tốt."
-        </p>
-        <div class="review-meta">
-          <span class="verified-badge"
-            ><i class="fas fa-check-circle"></i> Đã mua hàng</span
-          >
-          <span>5.0/5.0</span>
-        </div>
-      </article>
+    <div class="community-comments">
+      <div class="comment-compose" id="home-comment-form">
+        {% if editing_comment %}
+        <span class="compose-tag">Dang sua</span>
+        <h3>Chinh sua comment cua ban</h3>
+        <p>Cap nhat noi dung roi bam luu de thay doi comment hien tai.</p>
+        {% else %}
+        <span class="compose-tag">Comment moi</span>
+        <h3>De lai y kien tren trang chu</h3>
+        <p>Chia se trai nghiem cua ban de khach hang khac co them tham khao.</p>
+        {% endif %}
 
-      <article class="review-card">
-        <div class="review-top">
-          <img
-            class="review-avatar"
-            src="media/snacks/Hue.jpg"
-            alt="Lê Thị Huệ"
-          />
-          <div>
-            <h3 class="review-name">Lê Thị Huệ</h3>
-            <p class="review-role">Khách hàng mới</p>
-          </div>
-        </div>
-        <p class="review-text">
-          "Đồ ăn ngon, giá hợp lý và giao hàng nhanh. Đội ngũ hỗ trợ phản hồi
-          nhanh chóng nên mình rất yên tâm khi đặt hàng."
-        </p>
-        <div class="review-meta">
-          <span class="verified-badge"
-            ><i class="fas fa-check-circle"></i> Đã mua hàng</span
-          >
-          <span>4.5/5.0</span>
-        </div>
-      </article>
+        {% if user.is_authenticated %}
+        <form method="post" class="home-comment-form">
+          {% csrf_token %}
+          {% if editing_comment %}
+          <input type="hidden" name="action" value="update" />
+          <input type="hidden" name="comment_id" value="{{ editing_comment.id }}" />
+          {% else %}
+          <input type="hidden" name="action" value="create" />
+          {% endif %}
 
-      <article class="review-card">
-        <div class="review-top">
-          <img
-            class="review-avatar"
-            src="media/snacks/Trung.jpg"
-            alt="Nguyễn Quốc Trung"
-          />
-          <div>
-            <h3 class="review-name">Nguyễn Quốc Trung</h3>
-            <p class="review-role">Khách hàng thân thiết</p>
+          <label class="comment-label" for="{{ home_comment_form.comment.id_for_label }}">
+            Noi dung comment
+          </label>
+          {{ home_comment_form.comment }} {{ home_comment_form.comment.errors }}
+
+          <div class="form-actions">
+            <button type="submit" class="home-comment-submit">
+              {% if editing_comment %}Cap nhat comment{% else %}Gui comment{% endif %}
+            </button>
+            {% if editing_comment %}
+            <a href="{% url 'snacks:list' %}#home-comment-form" class="comment-cancel-link">
+              Huy
+            </a>
+            {% endif %}
           </div>
-        </div>
-        <p class="review-text">
-          "Kho sản phẩm phong phú, dễ tìm món cần mua. Chất lượng phục vụ tốt,
-          đơn hàng đến đúng hẹn và còn nguyên vẹn."
+        </form>
+        {% else %}
+        <p class="home-comment-login-note">
+          Vui long
+          <a href="{% url 'snacks:login' %}?next={{ request.get_full_path|urlencode }}">
+            dang nhap
+          </a>
+          de gui comment.
         </p>
-        <div class="review-meta">
-          <span class="verified-badge"
-            ><i class="fas fa-check-circle"></i> Đã mua hàng</span
-          >
-          <span>5.0/5.0</span>
+        {% endif %}
+      </div>
+
+      <div class="comment-feed">
+        {% for home_comment in home_comments %}
+        <article
+          class="comment-item{% if editing_comment and editing_comment.id == home_comment.id %} is-editing{% endif %}"
+        >
+          <div class="comment-meta">
+            <div>
+              <h4>{{ home_comment.user.get_full_name|default:home_comment.user.username }}</h4>
+              <div class="comment-date">{{ home_comment.created_at|date:"d/m/Y H:i" }}</div>
+            </div>
+            <span class="comment-badge">Community</span>
+          </div>
+
+          <p class="comment-body">{{ home_comment.comment|linebreaksbr }}</p>
+
+          {% if user.is_authenticated and user.id == home_comment.user_id %}
+          <div class="comment-tools">
+            <a href="?edit_comment={{ home_comment.id }}#home-comment-form" class="comment-edit-link">
+              Chinh sua
+            </a>
+            <form
+              method="post"
+              class="comment-delete-form"
+              onsubmit="return confirm('Ban chac chan muon xoa comment nay?');"
+            >
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete" />
+              <input type="hidden" name="comment_id" value="{{ home_comment.id }}" />
+              <button type="submit" class="comment-delete-btn">Xoa</button>
+            </form>
+            <span class="comment-owner-note">Comment cua ban</span>
+          </div>
+          {% endif %}
+        </article>
+        {% empty %}
+        <div class="comment-empty">
+          Chua co comment nao. Hay la nguoi dau tien chia se trai nghiem cua ban.
         </div>
-      </article>
+        {% endfor %}
+      </div>
     </div>
   </div>
-</section>
 </section>
