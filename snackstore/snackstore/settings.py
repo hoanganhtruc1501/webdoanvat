@@ -46,10 +46,10 @@ SECRET_KEY = os.environ.get(
 
 ALLOWED_HOSTS = env_list(
     "DJANGO_ALLOWED_HOSTS",
-    "127.0.0.1,localhost",
+    "127.0.0.1,localhost,snackstore.pythonanywhere.com",
 )
 
-CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS","https://snackstore.pythonanywhere.com",)
 
 
 # Application definition
