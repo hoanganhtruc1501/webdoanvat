@@ -1,13 +1,77 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% load static %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{% static 'css/snack_list.css' %}?v=pagination-safe-2026"
+/>
 
-{% block title %}Snackstore{% endblock %}
+<style>
+  .pagination-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 42px 0 34px;
+  }
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/snack_list.css' %}?v=target-banner-2026" />
-{% endblock %}
+  .pagination {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(255, 193, 7, 0.35);
+    box-shadow: 0 14px 35px rgba(255, 153, 0, 0.16);
+  }
 
-{% block content %}
+  .page-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 52px;
+    height: 52px;
+    padding: 0 18px;
+    border-radius: 16px;
+    border: 1px solid #ffd166;
+    background: #ffffff;
+    color: #5a3a00;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+    transition: 0.2s ease;
+  }
+
+  .page-btn:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #ffc107, #ff922b);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 12px 24px rgba(255, 146, 43, 0.32);
+  }
+
+  .page-arrow {
+    font-size: 26px;
+    font-weight: 900;
+    padding-bottom: 3px;
+  }
+
+  @media (max-width: 768px) {
+    .pagination {
+      gap: 8px;
+      padding: 10px 12px;
+    }
+
+    .page-btn {
+      min-width: 44px;
+      height: 44px;
+      padding: 0 14px;
+      font-size: 16px;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
 <div class="catalog-page">
   {% include 'components/slider.html' %}
 
@@ -24,6 +88,7 @@
         value="{{ request.GET.q }}"
         class="search-input"
       />
+
       <button type="submit" class="search-btn">
         <i class="fas fa-search" aria-hidden="true"></i>
         Tìm kiếm
@@ -38,20 +103,26 @@
       {% if selected_category %}
       <div class="catalog-heading">
         <h1>{{ selected_category.name }}</h1>
+
         {% if selected_category.description %}
         <p>{{ selected_category.description }}</p>
         {% endif %}
       </div>
-      {% endif %}
-
-      {% if page_obj.object_list %}
+      {% endif %} {% if page_obj.object_list %}
       <div class="product-grid">
         {% for snack in page_obj %}
         <article class="product-card">
-          <a href="{% url 'snacks:detail' slug=snack.slug %}" class="product-link">
+          <a
+            href="{% url 'snacks:detail' slug=snack.slug %}"
+            class="product-link"
+          >
             <div class="product-image-wrap">
               {% if snack.image %}
-              <img src="{{ snack.image.url }}" alt="{{ snack.title }}" class="product-image" />
+              <img
+                src="{{ snack.image.url }}"
+                alt="{{ snack.title }}"
+                class="product-image"
+              />
               {% else %}
               <div class="product-placeholder">
                 <i class="fas fa-cookie-bite" aria-hidden="true"></i>
@@ -61,11 +132,19 @@
 
             <div class="product-price-row">
               {% if snack.discount > 0 %}
-              <span class="product-price">{{ snack.get_discounted_price|floatformat:0 }}d</span>
-              <span class="product-original-price">{{ snack.price|floatformat:0 }}d</span>
-              <span class="product-discount">-{{ snack.discount|floatformat:0 }}%</span>
+              <span class="product-price"
+                >{{ snack.get_discounted_price|floatformat:0 }}d</span
+              >
+              <span class="product-original-price"
+                >{{ snack.price|floatformat:0 }}d</span
+              >
+              <span class="product-discount"
+                >-{{ snack.discount|floatformat:0 }}%</span
+              >
               {% else %}
-              <span class="product-price">{{ snack.price|floatformat:0 }}d</span>
+              <span class="product-price"
+                >{{ snack.price|floatformat:0 }}d</span
+              >
               {% endif %}
             </div>
 
@@ -80,6 +159,7 @@
                 <i class="fas fa-star"></i>
                 <i class="fas fa-star-half-alt"></i>
               </span>
+
               <span class="sold-count">Đã bán {{ snack.stock|add:1000 }}</span>
             </div>
           </a>
@@ -91,7 +171,28 @@
         </article>
         {% endfor %}
       </div>
-      {% else %}
+
+      {% if page_obj.has_other_pages %}
+      <div class="pagination-wrap">
+        <div class="pagination">
+          {% if page_obj.has_previous %}
+          <a
+            href="?page={{ page_obj.previous_page_number }}"
+            class="page-btn page-arrow"
+            >‹</a
+          >
+          {% endif %} {% for num in page_obj.paginator.page_range %}
+          <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+          {% endfor %} {% if page_obj.has_next %}
+          <a
+            href="?page={{ page_obj.next_page_number }}"
+            class="page-btn page-arrow"
+            >›</a
+          >
+          {% endif %}
+        </div>
+      </div>
+      {% endif %} {% else %}
       <div class="empty-products">
         <h2>Chưa có sản phẩm</h2>
         <p>Hãy thêm sản phẩm trong trang quản trị hoặc nạp dữ liệu mẫu.</p>
@@ -100,7 +201,7 @@
     </div>
   </section>
 
-  {% include 'components/reviews.html' %}
-  {% include 'components/home_service.html' %}
+  {% include 'components/reviews.html' %} {% include
+  'components/home_service.html' %}
 </div>
 {% endblock %}
