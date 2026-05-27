@@ -1,0 +1,21 @@
+<aside class="category-panel" id="categories" aria-label="Danh mục sản phẩm">
+  <h2>Thể loại</h2>
+  <nav class="category-nav">
+    <a
+      href="{% url 'snacks:list' %}"
+      class="category-link{% if not request.GET.category %} active{% endif %}"
+    >
+      Tất cả
+    </a>
+
+    {% for category in categories %}
+    <a
+      href="{% url 'snacks:list' %}?category={{ category.slug }}"
+      class="category-link{% if request.GET.category == category.slug %} active{% endif %}"
+      title="{{ category.description|default:category.name }}"
+    >
+      {{ category.name }}
+    </a>
+    {% endfor %}
+  </nav>
+</aside>

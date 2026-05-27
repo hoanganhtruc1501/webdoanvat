@@ -1,0 +1,163 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chi tiết đơn hàng #{{ order.id }} - Snackstore{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/order_detail.css' %}?v=4" />
+{% endblock %}
+
+{% block content %}
+<section class="order-detail-page">
+  <div class="order-detail-container">
+    <a href="{% url 'orders:list' %}" class="back-link">
+      <i class="fas fa-arrow-left"></i> Quay lại danh sách đơn hàng
+    </a>
+
+    <div class="order-hero">
+      <div class="order-hero-icon">
+        <i class="fas fa-receipt"></i>
+      </div>
+      <h1>Đơn hàng #{{ order.id }}</h1>
+      <p>Ngày đặt: {{ order.created_at|date:"d/m/Y H:i" }}</p>
+      <span class="status-pill status-{{ order.status }}">{{ order.get_status_display }}</span>
+    </div>
+
+    <div class="order-card status-card">
+      <h2><i class="fas fa-clock"></i> Trạng thái đơn hàng</h2>
+      <div class="status-timeline">
+        <div class="status-step active">
+          <span class="status-icon"><i class="fas fa-shopping-cart"></i></span>
+          <span>Đơn hàng đã được đặt</span>
+        </div>
+        <div class="status-step {% if order.status == 'processing' or order.status == 'shipping' or order.status == 'completed' %}active{% endif %}">
+          <span class="status-icon"><i class="fas fa-cog"></i></span>
+          <span>Đang xử lý đơn hàng</span>
+        </div>
+        <div class="status-step {% if order.status == 'shipping' or order.status == 'completed' %}active{% endif %}">
+          <span class="status-icon"><i class="fas fa-truck"></i></span>
+          <span>Đang giao hàng</span>
+        </div>
+        <div class="status-step {% if order.status == 'completed' %}active{% endif %}">
+          <span class="status-icon"><i class="fas fa-check"></i></span>
+          <span>Đã giao hàng thành công</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="order-card info-card">
+        <h2><i class="fas fa-user"></i> Thông tin khách hàng</h2>
+        <div class="info-row">
+          <span>Họ và tên:</span>
+          <strong>{{ order.full_name }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Email:</span>
+          <strong>{{ order.email }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Số điện thoại:</span>
+          <strong>{{ order.phone }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Tài khoản:</span>
+          <strong>{% if order.user %}{{ order.user.username }}{% else %}Khách vãng lai{% endif %}</strong>
+        </div>
+      </div>
+
+      <div class="order-card info-card">
+        <h2><i class="fas fa-map-marker-alt"></i> Địa chỉ giao hàng</h2>
+        <div class="info-row">
+          <span>Địa chỉ:</span>
+          <strong>{{ order.address }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Phường/Xã:</span>
+          <strong>{{ order.ward }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Quận/Huyện:</span>
+          <strong>{{ order.district }}</strong>
+        </div>
+        <div class="info-row">
+          <span>Tỉnh/Thành phố:</span>
+          <strong>{{ order.city }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-card products-card">
+      <h2><i class="fas fa-box"></i> Chi tiết sản phẩm ({{ order.items.count }} sản phẩm)</h2>
+      <div class="ordered-items">
+        {% for item in order.items.all %}
+        <div class="ordered-item">
+          <div class="ordered-image">
+            {% if item.snack and item.snack.image %}
+            <img src="{{ item.snack.image.url }}" alt="{{ item.snack_name }}" />
+            {% else %}
+            <div class="ordered-placeholder">
+              <i class="fas fa-cookie-bite"></i>
+            </div>
+            {% endif %}
+          </div>
+          <div class="ordered-info">
+            <h3>{{ item.snack_name }}</h3>
+            {% if item.snack and item.snack.author %}
+            <p>Thương hiệu: {{ item.snack.author }}</p>
+            {% endif %}
+            <strong>{{ item.price|floatformat:0 }}đ / sản phẩm</strong>
+          </div>
+          <div class="ordered-quantity">Số lượng: {{ item.quantity }}</div>
+          <div class="ordered-total">{{ item.subtotal|floatformat:0 }}đ</div>
+        </div>
+        {% empty %}
+        <p class="empty-order">Không có sản phẩm trong đơn hàng.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="order-card payment-card">
+      <h2><i class="fas fa-calculator"></i> Tóm tắt thanh toán</h2>
+      <div class="payment-row">
+        <span>Tạm tính:</span>
+        <strong>{{ order.total_amount|floatformat:0 }}đ</strong>
+      </div>
+      <div class="payment-row">
+        <span>Phí vận chuyển:</span>
+        {% if order.shipping_fee > 0 %}
+        <strong>{{ order.shipping_fee|floatformat:0 }}đ</strong>
+        {% else %}
+        <strong class="free-shipping">Miễn phí</strong>
+        {% endif %}
+      </div>
+      <div class="payment-row">
+        <span>Phương thức thanh toán:</span>
+        <strong>{{ order.get_payment_method_display }}</strong>
+      </div>
+      <div class="payment-row payment-total">
+        <span>Tổng cộng:</span>
+        <strong>{{ order.final_total|floatformat:0 }}đ</strong>
+      </div>
+      <div class="payment-meta">
+        <span><i class="fas fa-info-circle"></i> Đơn hàng được tạo lúc {{ order.created_at|date:"H:i d/m/Y" }}</span>
+        <span><i class="fas fa-edit"></i> Cập nhật lần cuối: {{ order.updated_at|date:"H:i d/m/Y" }}</span>
+      </div>
+    </div>
+
+    <div class="order-actions">
+      <a href="{% url 'snacks:list' %}" class="btn-primary-action">
+        <i class="fas fa-shopping-cart"></i> Tiếp tục mua sắm
+      </a>
+      {% if order.status == 'pending' %}
+      <form method="post" action="{% url 'orders:cancel' order_id=order.id %}" class="cancel-order-form">
+        {% csrf_token %}
+        <button type="submit" class="btn-danger-action" onclick="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?');">
+          <i class="fas fa-times"></i> Hủy đơn hàng
+        </button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

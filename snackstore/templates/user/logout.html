@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng xuất thành công - Snack Snackstore</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <div class="auth-logo-icon">🍪</div>
+            <span class="auth-logo-text">Snack</span>
+          </div>
+          <h1 class="auth-title">Đăng xuất thành công!</h1>
+          <p class="auth-subtitle">
+            Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi
+          </p>
+        </div>
+
+        <div class="success-message">
+          <i class="fas fa-check-circle"></i>
+          Bạn đã đăng xuất khỏi tài khoản thành công. Hẹn gặp lại bạn lần sau!
+        </div>
+
+        <div class="auth-footer">
+          <p>
+            <a href="{% url 'snacks:login' %}" class="auth-link">
+              <i class="fas fa-sign-in-alt"></i> Đăng nhập lại
+            </a>
+          </p>
+          <p style="margin-top: 15px">
+            <a href="{% url 'snacks:list' %}" class="auth-link">
+              <i class="fas fa-home"></i> Về trang chủ
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Auto redirect after 5 seconds
+      setTimeout(function () {
+        window.location.href = "{% url 'snacks:list' %}";
+      }, 5000);
+    </script>
+  </body>
+</html>

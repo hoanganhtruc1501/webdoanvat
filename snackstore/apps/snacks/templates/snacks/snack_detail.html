@@ -1,0 +1,579 @@
+{% extends 'base.html' %} {% load static %} {% block title %}{{ title }} -
+Snackstore{% endblock %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/snack_detail.css' %}" />
+<!-- Slick Slider CSS -->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"
+/>
+<!-- Font Awesome for icons -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+/>
+
+<style>
+  .related-snacks-slider {
+    margin: 30px auto;
+    position: relative;
+    padding: 0 50px;
+  }
+
+  .related-snacks-slider .snack-item {
+    margin: 0 10px;
+    outline: none;
+  }
+
+  .related-snacks-slider .slick-list {
+    margin: 0 -10px;
+  }
+
+  .related-snacks-slider .slick-track {
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+  }
+
+  /* Custom Arrow Styles */
+  .related-snacks-slider .slick-prev,
+  .related-snacks-slider .slick-next {
+    position: absolute;
+    top: 50%;
+    display: block !important;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    transform: translate(0, -50%);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    border-radius: 50%;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+  }
+
+  .related-snacks-slider .slick-prev:hover,
+  .related-snacks-slider .slick-next:hover {
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+    transform: translate(0, -50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+  }
+
+  .related-snacks-slider .slick-prev {
+    left: -10px;
+  }
+
+  .related-snacks-slider .slick-next {
+    right: -10px;
+  }
+
+  .related-snacks-slider .slick-prev i,
+  .related-snacks-slider .slick-next i {
+    color: white;
+    font-size: 18px;
+    line-height: 60px;
+  }
+
+  .related-snacks-slider .slick-prev:before,
+  .related-snacks-slider .slick-next:before {
+    display: none;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .related-snacks-slider {
+      padding: 0 30px;
+    }
+
+    .related-snacks-slider .slick-prev,
+    .related-snacks-slider .slick-next {
+      width: 50px;
+      height: 50px;
+    }
+
+    .related-snacks-slider .slick-prev i,
+    .related-snacks-slider .slick-next i {
+      font-size: 16px;
+      line-height: 50px;
+    }
+
+    .related-snacks-slider .slick-prev {
+      left: -5px;
+    }
+
+    .related-snacks-slider .slick-next {
+      right: -5px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .related-snacks-slider {
+      padding: 0 25px;
+    }
+
+    .related-snacks-slider .slick-prev,
+    .related-snacks-slider .slick-next {
+      width: 45px;
+      height: 45px;
+    }
+
+    .related-snacks-slider .slick-prev i,
+    .related-snacks-slider .slick-next i {
+      font-size: 14px;
+      line-height: 45px;
+    }
+
+    .related-snacks-slider .slick-prev {
+      left: 0;
+    }
+
+    .related-snacks-slider .slick-next {
+      right: 0;
+    }
+  }
+
+  /* Fix grid display when slider is initialized */
+  .related-snacks-slider.slick-initialized {
+    display: block !important;
+  }
+
+  .related-snacks-slider.slick-initialized .snack-grid {
+    display: block !important;
+  }
+</style>
+<div class="container detail-page">
+  <div style="width: 100%">
+    <div class="snack-detail-content">
+      {% if snack.image %}
+      <div class="snack-image">
+        <img src="{{ snack.image.url }}" alt="{{ snack.title }}" />
+      </div>
+      {% else %}
+      <div class="snac-image">
+        <img src="{% static 'snacks/placeholder.png' %}" alt="No Image" />
+      </div>
+      {% endif %}
+      <div class="snack-info">
+        <div class="">
+          <h2>{{ snack.title }}</h2>
+          <p><strong>Thương Hiệu:</strong> {{ snack.author }}</p>
+        </div>
+        <div class="">
+          {% if snack.category %}
+          <p>
+            <strong>🏷️ Sản Phẩm</strong>
+            <a
+              href="{% url 'snacks:list' %}?category={{ snack.category.slug }}"
+              class="category-link"
+            >
+              {{ snack.category.name }}
+            </a>
+          </p>
+          {% endif %}
+        </div>
+
+        <div class="">
+          <p>
+            <strong>💰 Giá:</strong>
+            {% if snack.discount > 0 %}
+            <span class="price-highlight"
+              >{{ snack.get_discounted_price|floatformat:0 }} VNĐ</span
+            >
+            <span
+              style="
+                font-size: 14px;
+                text-decoration: line-through;
+                color: #999;
+              "
+              class="original-price"
+              >{{ snack.price|floatformat:0 }} VNĐ</span
+            >
+            <span
+              style="
+                background: #e74c3c;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-size: 12px;
+                margin-left: 5px;
+              "
+              class="discount-badge"
+              >-{{ snack.discount }}%</span
+            >
+            {% else %}
+            <span class="price-highlight"
+              >{{ snack.price|floatformat:0 }} VNĐ</span
+            >
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="">
+          <p>
+            <strong>📦 Tình trạng:</strong>
+            {% if snack.stock > 0 %}
+            <span class="stock-status in-stock"
+              >Hàng có sẵn: {{ snack.stock }}</span
+            >
+            {% else %}
+            <span class="stock-status out-of-stock">❌ Hết hàng</span>
+            {% endif %}
+          </p>
+        </div>
+
+        <!-- Form thêm vào giỏ hàng -->
+        <div class="add-to-cart-section">
+          {% if snack.stock > 0 %}
+          <form
+            method="post"
+            action="{% url 'cart:add' snack_id=snack.id %}"
+            class="add-to-cart-form"
+          >
+            {% csrf_token %}
+            <div class="quantity-selector">
+              <label for="quantity">Số lượng:</label>
+              <div class="quantity-controls">
+                <button type="button" class="qty-btn qty-minus">-</button>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value="1"
+                  min="1"
+                  max="{{ snack.stock }}"
+                  class="quantity-input"
+                />
+                <button type="button" class="qty-btn qty-plus">+</button>
+              </div>
+            </div>
+            <button type="submit" class="btn-add-to-cart-detail">
+              🛒 Thêm vào giỏ hàng
+            </button>
+          </form>
+          {% else %}
+          <div class="out-of-stock-notice">
+            <button class="btn-out-of-stock-detail" disabled>
+              ❌ Hết hàng
+            </button>
+            <p class="stock-notice">
+              Sản phẩm này hiện đã hết hàng. Vui lòng quay lại sau!
+            </p>
+          </div>
+          {% endif %}
+        </div>
+
+        <h3>📝 Mô tả về sản phẩm:</h3>
+        <div class="snack-description">{{ snack.description|linebreaks }}</div>
+      </div>
+    </div>
+
+    <section
+      class="product-reviews"
+      id="reviews"
+      aria-labelledby="product-reviews-title"
+    >
+      <div class="product-reviews-header">
+        <div>
+          <h2 id="product-reviews-title">Đánh giá sản phẩm</h2>
+          <p>
+            {{ snack.review_count }} đánh giá - Trung bình {{ snack.average_rating }}/5 sao
+          </p>
+        </div>
+      </div>
+
+      <div class="product-review-layout">
+        <div class="product-review-form-card">
+          {% if user.is_authenticated %}
+          <h3>
+            {% if user_review %}Cập nhật đánh giá của bạn{% else %}Gửi đánh giá của bạn{% endif %}
+          </h3>
+          <form method="post" class="product-review-form">
+            {% csrf_token %}
+            <label for="{{ review_form.rating.id_for_label }}">Số sao</label>
+            {{ review_form.rating }} {{ review_form.rating.errors }}
+
+            <label for="{{ review_form.comment.id_for_label }}"
+              >Nội dung comment</label
+            >
+            {{ review_form.comment }} {{ review_form.comment.errors }}
+
+            <button type="submit" class="review-submit-btn">
+              {% if user_review %}Cập nhật comment{% else %}Gửi comment{% endif %}
+            </button>
+          </form>
+          {% else %}
+          <h3>Đăng nhập để comment</h3>
+          <p>Bạn cần đăng nhập trước khi gửi đánh giá sản phẩm.</p>
+          <a
+            class="review-login-link"
+            href="{% url 'snacks:login' %}?next={{ request.get_full_path|urlencode }}"
+          >
+            Đăng nhập
+          </a>
+          {% endif %}
+        </div>
+
+        <div class="product-review-list">
+          {% for review in reviews %}
+          <article class="product-review-item">
+            <div class="product-review-meta">
+              <strong>{{ review.user.get_full_name|default:review.user.username }}</strong>
+              <span>{{ review.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div
+              class="product-review-stars"
+              aria-label="{{ review.rating }} sao"
+            >
+              {% for _ in "12345" %}
+              <i
+                class="fas fa-star{% if forloop.counter > review.rating %} inactive{% endif %}"
+                aria-hidden="true"
+              ></i>
+              {% endfor %}
+            </div>
+            <p>{{ review.comment|linebreaksbr }}</p>
+          </article>
+          {% empty %}
+          <div class="product-review-empty">
+            Chưa có comment nào cho sản phẩm này.
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Sản phẩm cùng thể loại -->
+    <h2>Sản phẩm cùng thể loại</h2>
+    <div class="related-snacks-slider snack-grid">
+      {% for snack in related_snacks %}
+      <div class="snack-item">
+        <a href="{% url 'snacks:detail' slug=snack.slug %}" class="snack-link">
+          <div class="image-wrapper">
+            {% if snack.image %}
+            <img
+              src="{{ snack.image.url }}"
+              alt="{{ snack.title }}"
+              class="snack-image"
+              width="240"
+              height="250"
+            />
+            {% else %}
+            <img
+              src="{% static 'snacks/placeholder.png' %}"
+              alt="No Image"
+              class="snack-image"
+              width="240"
+              height="250"
+            />
+            {% endif %}
+          </div>
+          <div class="price-row" style="margin-top: 8px">
+            {% if snack.discount > 0 %}
+            <span
+              class="price"
+              style="font-size: 20px; font-weight: 700; color: #e74c3c"
+              >{{ snack.get_discounted_price|floatformat:0 }}₫</span
+            >
+            <span
+              class="original-price"
+              style="
+                font-size: 14px;
+                text-decoration: line-through;
+                color: #999;
+              "
+              >{{ snack.price|floatformat:0 }}₫</span
+            >
+            <span
+              class="discount-badge"
+              style="
+                background: #e74c3c;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-size: 12px;
+                margin-left: 5px;
+              "
+              >-{{ snack.discount }}%</span
+            >
+            {% else %}
+            <span class="price" style="font-size: 20px; font-weight: 700"
+              >{{ snack.price|floatformat:0 }}₫</span
+            >
+            {% endif %}
+          </div>
+          <div class="author">{{ snack.author }}</div>
+          <div class="title">{{ snack.title }}</div>
+          <div class="rating-row" aria-label="4.5 star rating">
+            <svg
+              class="star"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              focusable="false"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.974a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.974c.3.922-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.196-1.539-1.118l1.287-3.974a1 1 0 00-.364-1.118L2.045 9.4c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.974z"
+              />
+            </svg>
+            <svg
+              class="star"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              focusable="false"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.974a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.974c.3.922-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.196-1.539-1.118l1.287-3.974a1 1 0 00-.364-1.118L2.045 9.4c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.974z"
+              />
+            </svg>
+            <svg
+              class="star"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              focusable="false"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.974a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.974c.3.922-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.196-1.539-1.118l1.287-3.974a1 1 0 00-.364-1.118L2.045 9.4c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.974z"
+              />
+            </svg>
+            <svg
+              class="star"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              focusable="false"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.974a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.974c.3.922-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.196-1.539-1.118l1.287-3.974a1 1 0 00-.364-1.118L2.045 9.4c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.974z"
+              />
+            </svg>
+            <svg
+              class="star"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="half-grad" x1="0" y1="0" x2="100%" y2="0">
+                  <stop offset="50%" stop-color="#fbbf24" />
+                  <stop offset="50%" stop-color="transparent" />
+                </linearGradient>
+              </defs>
+              <path
+                fill="url(#half-grad)"
+                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.974a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.462a1 1 0 00-.364 1.118l1.287 3.974c.3.922-.755 1.688-1.54 1.118l-3.388-2.462a1 1 0 00-1.175 0l-3.388 2.462c-.784.57-1.838-.196-1.539-1.118l1.287-3.974a1 1 0 00-.364-1.118L2.045 9.4c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.974z"
+              />
+            </svg>
+            <span class="sold">Đã bán {{ snack.stock|add:1000 }}</span>
+          </div>
+        </a>
+
+        <!-- Add to cart button -->
+        <div class="card-actions">
+          <a href="{% url 'cart:add' snack_id=snack.id %}" class="btn-add-cart">
+            🛒 Thêm vào giỏ
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- jQuery and Slick Slider JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const quantityInput = document.getElementById("quantity");
+    const minusBtn = document.querySelector(".qty-minus");
+    const plusBtn = document.querySelector(".qty-plus");
+
+    if (quantityInput && minusBtn && plusBtn) {
+      const maxQuantity = parseInt(quantityInput.max);
+
+      minusBtn.addEventListener("click", function () {
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+          quantityInput.value = currentValue - 1;
+        }
+      });
+
+      plusBtn.addEventListener("click", function () {
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue < maxQuantity) {
+          quantityInput.value = currentValue + 1;
+        }
+      });
+
+      // Validate input manually
+      quantityInput.addEventListener("input", function () {
+        const value = parseInt(this.value);
+        if (value < 1) {
+          this.value = 1;
+        } else if (value > maxQuantity) {
+          this.value = maxQuantity;
+        }
+      });
+    }
+  });
+
+  // Initialize Slick Slider for Related Snacks
+  $(document).ready(function () {
+    $(".related-snacks-slider").slick({
+      infinite: true,
+      slidesToShow: 4,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 3000,
+      dots: false,
+      arrows: true,
+      prevArrow:
+        '<button type="button" class="slick-prev"><i class="fas fa-chevron-left"></i></button>',
+      nextArrow:
+        '<button type="button" class="slick-next"><i class="fas fa-chevron-right"></i></button>',
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          },
+        },
+      ],
+    });
+  });
+</script>
+{% endblock %}
