@@ -154,6 +154,36 @@ Snackstore{% endblock %} {% block extra_css %}
             <strong class="free-shipping">Miễn phí</strong>
             {% endif %}
           </div>
+          <div class="summary-row">
+            <span>Mã giảm giá</span>
+          </div>
+          
+          <div class="promotion-box">
+            <input
+              type="text"
+              name="promotion_code"
+              value="{{ promotion_code }}"
+              placeholder="Nhập mã giảm giá"
+              class="form-control"
+            />
+          
+            {% if promotion %}
+              <button type="submit" name="remove_promotion" class="btn-remove-promotion">
+                Xóa mã
+              </button>
+            {% else %}
+              <button type="submit" name="apply_promotion" class="btn-apply-promotion">
+                Áp dụng
+              </button>
+            {% endif %}
+          </div>
+          
+          {% if promotion %}
+          <div class="summary-row discount-row">
+            <span>Đã áp dụng mã {{ promotion.code }}</span>
+            <strong>-{{ discount_amount|floatformat:0 }}d</strong>
+          </div>
+          {% endif %}
           <div class="summary-row total-row">
             <span>Tổng cộng</span>
             <strong>{{ final_total|floatformat:0 }}d</strong>
