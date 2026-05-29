@@ -106,17 +106,26 @@ def checkout_view(request):
         return redirect("orders:checkout")
 
     if request.method == "POST" and "apply_promotion" in request.POST:
-        submitted_code = request.POST.get("promotion_code", "")
-        promotion, discount_amount, promotion_error = get_valid_promotion(submitted_code, total_amount)
-        if promotion_error:
+        submitted_code = request.POST.get("promotion_code", "").strip().upper()
+    
+        if not submitted_code:
             request.session.pop("promotion_code", None)
-            messages.error(request, promotion_error)
+            messages.error(request, "Bạn chưa nhập mã giảm giá.")
         else:
-            request.session["promotion_code"] = promotion.code
-            messages.success(request, f"Đã áp dụng mã giảm giá {promotion.code}.")
+            promotion, discount_amount, promotion_error = get_valid_promotion(
+                submitted_code,
+                total_amount
+            )
+    
+            if promotion_error:
+                request.session.pop("promotion_code", None)
+                messages.error(request, promotion_error)
+            elif promotion:
+                request.session["promotion_code"] = promotion.code
+                messages.success(request, f"Đã áp dụng mã giảm giá {promotion.code}.")
+
         request.session.modified = True
         return redirect("orders:checkout")
-
     if request.method == "POST":
         promotion_code = request.POST.get("promotion_code", promotion_code).strip().upper()
 
